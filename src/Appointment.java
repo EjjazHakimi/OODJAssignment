@@ -3,17 +3,17 @@
  *
  * @author ejjaz
  */
-public class Appointment {
-    protected String appointmentID;
-    protected String appointmentType;
-    protected String appointmentLocation;
-    protected String appointmentDate;
-    protected String appointmentStartTime;
-    protected boolean appointmentStatus;
-    protected boolean appointmentPaymentStatus;
-    protected Technician technician;
-    protected Customer customer;
-    protected CounterStaff counterStaff;
+public class Appointment implements FileHandlerInterface {
+    private String appointmentID;
+    private String appointmentType;
+    private String appointmentLocation;
+    private String appointmentDate;
+    private String appointmentStartTime;
+    private boolean appointmentStatus;
+    private boolean appointmentPaymentStatus;
+    private Technician technician;
+    private Customer customer;
+    private CounterStaff counterStaff;
     
     public Appointment(String appointmentID, String appointmentLocation, 
             String appointmentType, String appointmentDate, String appointmentStartTime, 
@@ -90,10 +90,16 @@ public class Appointment {
         this.technician = newTechnician;
     }
     
+    @Override
     public String toString(){
         return appointmentID + "|" + appointmentLocation + "|" + appointmentType + "|" + 
                 appointmentDate + "|" + appointmentStartTime + "|" + 
                 appointmentStatus + "|" + appointmentPaymentStatus + "|" +
                 technician.getUserID() + "|" + customer.getUserID() + "|" + counterStaff.getUserID();
+    }
+
+    @Override
+    public String getFileKey() {
+        return appointmentID;
     }
 }

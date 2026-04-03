@@ -3,22 +3,23 @@
  *
  * @author ejjaz
  */
-public class Payment extends Appointment {
+public class Payment implements FileHandlerInterface {
     private String paymentID;
     private double paymentAmount;
     private String paymentDate;
+    private Appointment appointment;
+    private Customer customer;
+    private CounterStaff counterStaff;
     
     public Payment(String paymentID, double paymentAmount, String paymentDate, 
-            String appointmentID, String appointmentLocation, String appointmentType, String appointmentDate, 
-            String appointmentStartTime, boolean appointmentStatus, boolean appointmentPaymentStatus, 
-            Technician technician, Customer customer, CounterStaff counterStaff) {
-        
-        super(appointmentID, appointmentType, appointmentLocation, appointmentDate, appointmentStartTime, 
-                appointmentStatus, appointmentPaymentStatus, technician, customer, counterStaff);
-        
+            Appointment appointment, Customer customer, CounterStaff counterStaff) {
+
         this.paymentID = paymentID;
         this.paymentAmount = paymentAmount;
         this.paymentDate = paymentDate;
+        this.appointment = appointment;
+        this.customer = customer;
+        this.counterStaff = counterStaff;
     }
     
     public String getPaymentID() {
@@ -39,7 +40,12 @@ public class Payment extends Appointment {
     
     @Override
     public String toString() {
-        return paymentID + "|" + paymentDate + "|" + appointmentID + "|" + appointmentLocation + "|" + 
-                appointmentType + "|" + paymentAmount + "|" + customer.getUserID() + "|" + counterStaff.getUserID();
+        return paymentID + "|" + paymentAmount + "|" +  paymentDate + "|" +
+                appointment.getAppointmentID() + "|" + customer.getUserID() + "|" + counterStaff.getUserID();
+    }
+    
+    @Override 
+    public String getFileKey() {
+        return paymentID;
     }
 }
