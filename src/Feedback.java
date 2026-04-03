@@ -3,22 +3,23 @@
  *
  * @author ejjaz
  */
-public class Feedback extends Appointment {
+public class Feedback implements FileHandlerInterface {
     private String feedbackID;
     private String customerFeedback;
     private String technicianFeedback;
+    private Appointment appointment;
+    private Customer customer;
+    private Technician technician;
     
-    public Feedback(String feedbackID, String customerFeedback, String technicianFeedback, 
-            String appointmentID, String appointmentLocation, String appointmentType, String appointmentDate, 
-            String appointmentStartTime, boolean appointmentStatus, boolean appointmentPaymentStatus, 
-            Technician technician, Customer customer, CounterStaff counterStaff) {
-        
-        super(appointmentID, appointmentType, appointmentLocation, appointmentDate, appointmentStartTime, 
-                appointmentStatus, appointmentPaymentStatus, technician, customer, counterStaff);
-        
+    public Feedback(String feedbackID, String customerFeedback, String technicianFeedback,  
+        Appointment appointment, Customer customer, Technician technician) {
+          
         this.feedbackID = feedbackID;
         this.customerFeedback = customerFeedback;
         this.technicianFeedback = technicianFeedback;
+        this.appointment = appointment;
+        this.customer = customer;
+        this.technician = technician;
     }
     
     public String getFeedbackID() {
@@ -42,9 +43,15 @@ public class Feedback extends Appointment {
         this.technicianFeedback = finalTechnicianFeedback;
     }
     
+    
+    @Override
+    public String getFileKey() {
+        return feedbackID;
+    }
+    
     @Override
     public String toString() {
-        return feedbackID + "|" + appointmentID + "|" + technician.getUserID() 
-                + "|" + customer.getUserID() + "|" + customerFeedback + "|" + technicianFeedback;
+        return feedbackID + "|" + customerFeedback + "|" + technicianFeedback + "|" 
+                + appointment.getAppointmentID() + "|" + customer.getUserID() + "|" + technician.getUserID();
     }    
 }

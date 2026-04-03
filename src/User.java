@@ -3,19 +3,17 @@
  *
  * @author ejjaz
  */
-public class User {
+public class User implements FileHandlerInterface {
     protected String userID;
     protected String username;
     protected String password;
-    protected String userGender;
     protected String userRole;
     
     public User(String userID, String username, String password, 
-            String userGender, String userRole) {
+            String userRole) {
         this.userID = userID;
         this.username = username;
         this.password = password;
-        this.userGender = userGender;
         this.userRole = userRole;
     }
     
@@ -31,10 +29,6 @@ public class User {
         return password;
     }
     
-    public String getUserGender(){
-        return userGender;
-    }
-    
     public String getUserRole(){
         return userRole;
     }
@@ -47,13 +41,18 @@ public class User {
         this.password = newPassword;
     }
     
-    public boolean isValidLogin(String loginUsername, String loginPassword) {
-        return this.username.equals(loginUsername) 
+    public boolean isValidLogin(String loginID, String loginUsername, String loginPassword) {
+        return this.userID.equals(loginID) && this.username.equals(loginUsername) 
                 && this.password.equals(loginPassword);
     }
 
+    @Override
     public String toString(){
-        return userID + "|" + username + "|" + password + "|" + userGender 
-                + "|" + userRole;
+        return userID + "|" + username + "|" + password + "|" + userRole;
+    }
+
+    @Override
+    public String getFileKey() {
+        return userID;
     }
 }
