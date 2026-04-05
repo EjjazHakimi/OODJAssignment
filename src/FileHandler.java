@@ -39,6 +39,12 @@ public class FileHandler {
         }
     }
     
+    public void writeLoginUserRecord(FileHandlerInterface record) throws FileNotFoundException, IOException {
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filename, false))) {
+            bw.write(record.toString());
+        }
+    }
+    
     public void deleteRecord() throws FileNotFoundException, IOException {
         //TODO
     }

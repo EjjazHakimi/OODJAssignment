@@ -35,7 +35,6 @@ public class LoginScreen extends javax.swing.JFrame {
         tfID = new javax.swing.JTextField();
         tfPassword = new javax.swing.JPasswordField();
         bLogin = new javax.swing.JButton();
-        bToRegister = new javax.swing.JButton();
         lUsername = new javax.swing.JLabel();
         lPassword = new javax.swing.JLabel();
         lID = new javax.swing.JLabel();
@@ -43,7 +42,6 @@ public class LoginScreen extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1014, 520));
-        setPreferredSize(new java.awt.Dimension(1014, 520));
         setResizable(false);
         setSize(new java.awt.Dimension(1014, 520));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -63,17 +61,6 @@ public class LoginScreen extends javax.swing.JFrame {
         bLogin.addActionListener(this::bLoginActionPerformed);
         getContentPane().add(bLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 380, 100, 40));
 
-        bToRegister.setText("To Register");
-        bToRegister.setBorder(null);
-        bToRegister.setBorderPainted(false);
-        bToRegister.setFocusPainted(false);
-        bToRegister.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                bToRegisterMouseClicked(evt);
-            }
-        });
-        getContentPane().add(bToRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 30, 100, 40));
-
         lUsername.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
         lUsername.setText("USERNAME:");
         getContentPane().add(lUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 380, -1, -1));
@@ -92,12 +79,6 @@ public class LoginScreen extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void bToRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bToRegisterMouseClicked
-        RegisterScreen rs = new RegisterScreen();
-        rs.show();
-        dispose();
-    }//GEN-LAST:event_bToRegisterMouseClicked
 
     private void bLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLoginActionPerformed
         String loginID = tfID.getText().trim();
@@ -132,6 +113,8 @@ public class LoginScreen extends javax.swing.JFrame {
             
             if(user != null) {
                 JOptionPane.showMessageDialog(null, "Login Successful", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+                FileHandler fh = new FileHandler("login.txt");
+                fh.writeLoginUserRecord(user);
                 String role = user.getUserRole();
                 
                 switch(role) {
@@ -185,7 +168,6 @@ public class LoginScreen extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bLogin;
-    private javax.swing.JButton bToRegister;
     private javax.swing.JLabel lBackground;
     private javax.swing.JLabel lID;
     private javax.swing.JLabel lPassword;

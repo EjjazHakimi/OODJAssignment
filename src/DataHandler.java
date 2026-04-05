@@ -2,6 +2,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -221,5 +222,48 @@ public class DataHandler {
             }
         }
         return null;
+    }
+    
+    public User CreateUser(String newUserID, String newUsername, String newPassword, String newRole) throws IOException {
+        
+        User u = null;
+        
+        if(newUserID.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "ID field is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else if(newUsername.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Username field is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else if (newPassword.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Password field is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else if (newRole.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Role is not selected", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else if (newUserID.length() != 8) {
+            JOptionPane.showMessageDialog(null, "Invalid ID", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        
+        
+        switch (newRole) {
+            case "TECHNICIAN":
+                        u = new Technician(newUserID, newUsername, newPassword, newRole);
+                        technicians[technicianCount++] = (Technician) u;
+                        break;
+                    case "COUNTERSTAFF":
+                        u = new CounterStaff(newUserID, newUsername, newPassword, newRole);
+                        counterStaffs[counterStaffCount++] = (CounterStaff) u;
+                        break;
+                    case "CUSTOMER":
+                        u = new Customer(newUserID, newUsername, newPassword, newRole);
+                        customers[customerCount++] = (Customer) u;
+                        break;
+                    case "MANAGER":
+                        u = new Manager(newUserID, newUsername, newPassword, newRole);
+                        managers[managerCount++] = (Manager) u;
+                        break;
+        }
+        return u;
     }
 }
