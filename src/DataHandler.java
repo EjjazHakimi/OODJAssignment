@@ -116,8 +116,8 @@ public class DataHandler {
                 String appointmentType = appointmentRecord[2];
                 String appointmentDate = appointmentRecord[3];
                 String appointmentStartTime = appointmentRecord[4];
-                
-                boolean appointmentStatus = Boolean.parseBoolean(appointmentRecord[5]);
+                String appointmentStatus = appointmentRecord[5];
+
                 boolean appointmentPaymentStatus = Boolean.parseBoolean(appointmentRecord[6]);
                 
                 String technicianID = appointmentRecord[7];
