@@ -224,7 +224,7 @@ public class DataHandler {
         return null;
     }
     
-    public User CreateUser(String newUserID, String newUsername, String newPassword, String newRole) throws IOException {
+    public User RegisterUser(String newUserID, String newUsername, String newPassword, String newRole) throws IOException {
         
         User u = null;
         
