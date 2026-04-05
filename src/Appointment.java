@@ -9,7 +9,7 @@ public class Appointment implements FileHandlerInterface {
     private String appointmentLocation;
     private String appointmentDate;
     private String appointmentStartTime;
-    private boolean appointmentStatus;
+    private String appointmentStatus;
     private boolean appointmentPaymentStatus;
     private Technician technician;
     private Customer customer;
@@ -17,7 +17,7 @@ public class Appointment implements FileHandlerInterface {
     
     public Appointment(String appointmentID, String appointmentLocation, 
             String appointmentType, String appointmentDate, String appointmentStartTime, 
-            boolean appointmentStatus, boolean appointmentPaymentStatus, Technician technician, Customer customer, CounterStaff counterStaff) {
+            String appointmentStatus, boolean appointmentPaymentStatus, Technician technician, Customer customer, CounterStaff counterStaff) {
         this.appointmentID = appointmentID;
         this.appointmentLocation = appointmentLocation;
         this.appointmentType = appointmentType;
@@ -50,7 +50,7 @@ public class Appointment implements FileHandlerInterface {
         return appointmentStartTime;
     }
     
-    public boolean getAppointmentStatus() {
+    public String getAppointmentStatus() {
         return appointmentStatus;
     }
     
@@ -78,8 +78,8 @@ public class Appointment implements FileHandlerInterface {
         this.appointmentStartTime = newAppointmentStartTime;
     }
     
-    public void setAppointmentStatus(boolean currentAppointmentStatus) {
-        this.appointmentStatus = !currentAppointmentStatus;
+    public void setAppointmentStatus(String currentAppointmentStatus) {
+        this.appointmentStatus = currentAppointmentStatus;
     }
     
     public void setAppointmentPaymentStatus(boolean currentAppointmentPaymentStatus) {
