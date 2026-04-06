@@ -39,9 +39,18 @@ public class DataHandler {
     private String paymentFile = "payment.txt";
     private String feedbackFile = "feedback.txt";
     
+    public DataHandler(){
+    }
     
     public User [] loadUsers() throws IOException {
-
+        
+        System.out.println("READ user.txt");
+        userCount = 0;
+        technicianCount = 0;
+        counterStaffCount = 0;
+        managerCount = 0;
+        customerCount = 0;
+        
         try(BufferedReader br = new BufferedReader(new FileReader(userFile))) {
             String line;
             while((line = br.readLine()) != null && userCount < maxCount ) {
@@ -93,7 +102,7 @@ public class DataHandler {
             }
         }
         
-        return result;
+        return java.util.Arrays.copyOf(result, count);
     }
     
     public User getUserByID(String ID) {
@@ -106,6 +115,8 @@ public class DataHandler {
     }
     
     public Appointment [] loadAppointments() throws IOException {
+        
+        appointmentCount = 0;
 
         try(BufferedReader br = new BufferedReader(new FileReader(appointmentFile))){
             String line;
@@ -132,8 +143,8 @@ public class DataHandler {
                     appointmentID, appointmentLocation, appointmentType,
                     appointmentDate, appointmentStartTime, appointmentStatus, 
                     appointmentPaymentStatus, technician, customer, counterStaff);
-            }
-        }
+            } 
+        }      
         return appointments;
     }
     
@@ -146,7 +157,9 @@ public class DataHandler {
         return null;
     }
     
-    public Payment [] loadPayment() throws IOException {
+    public Payment [] loadPayments() throws IOException {
+        
+        paymentCount = 0;
         
         try(BufferedReader br = new BufferedReader(new FileReader(paymentFile))) {
             String line;
@@ -181,6 +194,8 @@ public class DataHandler {
     }
     
     public Feedback [] loadFeedback() throws IOException {
+        
+        feedbackCount = 0;
         
         try(BufferedReader br = new BufferedReader(new FileReader(feedbackFile))) {
             String line;
