@@ -2,6 +2,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -38,9 +39,18 @@ public class DataHandler {
     private String paymentFile = "payment.txt";
     private String feedbackFile = "feedback.txt";
     
+    public DataHandler(){
+    }
     
     public User [] loadUsers() throws IOException {
-
+        
+        System.out.println("READ user.txt");
+        userCount = 0;
+        technicianCount = 0;
+        counterStaffCount = 0;
+        managerCount = 0;
+        customerCount = 0;
+        
         try(BufferedReader br = new BufferedReader(new FileReader(userFile))) {
             String line;
             while((line = br.readLine()) != null && userCount < maxCount ) {
@@ -92,7 +102,7 @@ public class DataHandler {
             }
         }
         
-        return result;
+        return java.util.Arrays.copyOf(result, count);
     }
     
     public User getUserByID(String ID) {
@@ -105,6 +115,8 @@ public class DataHandler {
     }
     
     public Appointment [] loadAppointments() throws IOException {
+        
+        appointmentCount = 0;
 
         try(BufferedReader br = new BufferedReader(new FileReader(appointmentFile))){
             String line;
@@ -115,8 +127,8 @@ public class DataHandler {
                 String appointmentType = appointmentRecord[2];
                 String appointmentDate = appointmentRecord[3];
                 String appointmentStartTime = appointmentRecord[4];
-                
-                boolean appointmentStatus = Boolean.parseBoolean(appointmentRecord[5]);
+                String appointmentStatus = appointmentRecord[5];
+
                 boolean appointmentPaymentStatus = Boolean.parseBoolean(appointmentRecord[6]);
                 
                 String technicianID = appointmentRecord[7];
@@ -131,8 +143,8 @@ public class DataHandler {
                     appointmentID, appointmentLocation, appointmentType,
                     appointmentDate, appointmentStartTime, appointmentStatus, 
                     appointmentPaymentStatus, technician, customer, counterStaff);
-            }
-        }
+            } 
+        }      
         return appointments;
     }
     
@@ -145,7 +157,9 @@ public class DataHandler {
         return null;
     }
     
-    public Payment [] loadPayment() throws IOException {
+    public Payment [] loadPayments() throws IOException {
+        
+        paymentCount = 0;
         
         try(BufferedReader br = new BufferedReader(new FileReader(paymentFile))) {
             String line;
@@ -154,16 +168,17 @@ public class DataHandler {
                 String paymentID = paymentRecord[0];
                 double paymentAmount = Double.parseDouble(paymentRecord[1]);
                 String paymentDate = paymentRecord[2];
+                String paymentStatus = paymentRecord[3];
                 
-                String appointmentID = paymentRecord[3];
-                String customerID = paymentRecord[4];
-                String counterStaffID = paymentRecord[5];
+                String appointmentID = paymentRecord[4];
+                String customerID = paymentRecord[5];
+                String counterStaffID = paymentRecord[6];
                 
                 Appointment appointment = getAppointmentByID(appointmentID);
                 Customer customer = (Customer) getUserByID(customerID);
                 CounterStaff counterStaff = (CounterStaff) getUserByID(counterStaffID);
                 
-                payments[paymentCount++] = new Payment(paymentID, paymentAmount, paymentDate, 
+                payments[paymentCount++] = new Payment(paymentID, paymentAmount, paymentDate, paymentStatus,
                         appointment, customer, counterStaff);
             }
         }
@@ -180,6 +195,8 @@ public class DataHandler {
     }
     
     public Feedback [] loadFeedback() throws IOException {
+        
+        feedbackCount = 0;
         
         try(BufferedReader br = new BufferedReader(new FileReader(feedbackFile))) {
             String line;
@@ -221,5 +238,48 @@ public class DataHandler {
             }
         }
         return null;
+    }
+    
+    public User RegisterUser(String newUserID, String newUsername, String newPassword, String newRole) throws IOException {
+        
+        User u = null;
+        
+        if(newUserID.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "ID field is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else if(newUsername.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Username field is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else if (newPassword.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Password field is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else if (newRole.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Role is not selected", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else if (newUserID.length() != 8) {
+            JOptionPane.showMessageDialog(null, "Invalid ID", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        
+        
+        switch (newRole) {
+            case "TECHNICIAN":
+                        u = new Technician(newUserID, newUsername, newPassword, newRole);
+                        technicians[technicianCount++] = (Technician) u;
+                        break;
+                    case "COUNTERSTAFF":
+                        u = new CounterStaff(newUserID, newUsername, newPassword, newRole);
+                        counterStaffs[counterStaffCount++] = (CounterStaff) u;
+                        break;
+                    case "CUSTOMER":
+                        u = new Customer(newUserID, newUsername, newPassword, newRole);
+                        customers[customerCount++] = (Customer) u;
+                        break;
+                    case "MANAGER":
+                        u = new Manager(newUserID, newUsername, newPassword, newRole);
+                        managers[managerCount++] = (Manager) u;
+                        break;
+        }
+        return u;
     }
 }

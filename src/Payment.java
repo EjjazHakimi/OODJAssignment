@@ -7,16 +7,18 @@ public class Payment implements FileHandlerInterface {
     private String paymentID;
     private double paymentAmount;
     private String paymentDate;
+    private String paymentStatus;
     private Appointment appointment;
     private Customer customer;
     private CounterStaff counterStaff;
     
-    public Payment(String paymentID, double paymentAmount, String paymentDate, 
+    public Payment(String paymentID, double paymentAmount, String paymentDate, String paymentStatus,
             Appointment appointment, Customer customer, CounterStaff counterStaff) {
 
         this.paymentID = paymentID;
         this.paymentAmount = paymentAmount;
         this.paymentDate = paymentDate;
+        this.paymentStatus = paymentStatus;
         this.appointment = appointment;
         this.customer = customer;
         this.counterStaff = counterStaff;
@@ -34,13 +36,17 @@ public class Payment implements FileHandlerInterface {
         return paymentDate;
     }
     
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+    
     public void setCounterStaff(CounterStaff paymentCollector) {
         this.counterStaff = paymentCollector;
     }
     
     @Override
     public String toString() {
-        return paymentID + "|" + paymentAmount + "|" +  paymentDate + "|" +
+        return paymentID + "|" + paymentAmount + "|" +  paymentDate + "|" + paymentStatus + "|" +
                 appointment.getAppointmentID() + "|" + customer.getUserID() + "|" + counterStaff.getUserID();
     }
     
