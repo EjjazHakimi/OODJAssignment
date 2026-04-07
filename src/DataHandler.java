@@ -168,16 +168,17 @@ public class DataHandler {
                 String paymentID = paymentRecord[0];
                 double paymentAmount = Double.parseDouble(paymentRecord[1]);
                 String paymentDate = paymentRecord[2];
+                String paymentStatus = paymentRecord[3];
                 
-                String appointmentID = paymentRecord[3];
-                String customerID = paymentRecord[4];
-                String counterStaffID = paymentRecord[5];
+                String appointmentID = paymentRecord[4];
+                String customerID = paymentRecord[5];
+                String counterStaffID = paymentRecord[6];
                 
                 Appointment appointment = getAppointmentByID(appointmentID);
                 Customer customer = (Customer) getUserByID(customerID);
                 CounterStaff counterStaff = (CounterStaff) getUserByID(counterStaffID);
                 
-                payments[paymentCount++] = new Payment(paymentID, paymentAmount, paymentDate, 
+                payments[paymentCount++] = new Payment(paymentID, paymentAmount, paymentDate, paymentStatus,
                         appointment, customer, counterStaff);
             }
         }

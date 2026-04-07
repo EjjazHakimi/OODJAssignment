@@ -1,4 +1,5 @@
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -30,6 +32,16 @@ public class CounterStaffScreen extends javax.swing.JFrame {
      */
     public CounterStaffScreen() throws IOException {
         initComponents();
+        
+        tCustomers.getColumnModel().getColumn(4)
+            .setCellRenderer(new ButtonRenderer());
+        tCustomers.getColumnModel().getColumn(4)
+            .setCellEditor(new UpdateButtonEditor(new JCheckBox(), tCustomers));
+
+        tCustomers.getColumnModel().getColumn(5)
+            .setCellRenderer(new ButtonRenderer());
+        tCustomers.getColumnModel().getColumn(5)
+            .setCellEditor(new DeleteButtonEditor(new JCheckBox(), tCustomers));
         
         onStart();
 
@@ -108,24 +120,24 @@ public class CounterStaffScreen extends javax.swing.JFrame {
 
         tCustomers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "User ID", "Username", "Password", "Role", "Action"
+                "User ID", "Username", "Password", "Role", "Action", "Action"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, true, true, false, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tCustomers.setCellSelectionEnabled(true);
+        tCustomers.setColumnSelectionAllowed(false);
         jScrollPane1.setViewportView(tCustomers);
         if (tCustomers.getColumnModel().getColumnCount() > 0) {
             tCustomers.getColumnModel().getColumn(0).setResizable(false);
@@ -133,6 +145,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
             tCustomers.getColumnModel().getColumn(2).setResizable(false);
             tCustomers.getColumnModel().getColumn(3).setResizable(false);
             tCustomers.getColumnModel().getColumn(4).setResizable(false);
+            tCustomers.getColumnModel().getColumn(5).setResizable(false);
         }
 
         pManageCustomers.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 710, 260));
@@ -296,14 +309,19 @@ public class CounterStaffScreen extends javax.swing.JFrame {
             if(!fh.doesRecordExists(u)) {
                 fh.writeRecord(u);
                 dh.loadUsers();
-                loadUserTable();
+                JOptionPane.showMessageDialog(null, "User successfully created", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+                loadUserTable();   
             } else {
                 JOptionPane.showMessageDialog(null, "User already exists!", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
             
         } catch (IOException ex) {
             System.getLogger(CounterStaffScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } 
+        }
+        
+        tfNewCustomerUsername.setText("");
+        tfNewCustomerPassword.setText("");
+        tfNewCustomerID.setText("");
         
     }//GEN-LAST:event_bCreateUserActionPerformed
     
@@ -334,6 +352,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 u.getUsername(),
                 u.getPassword(),
                 u.getUserRole(),
+                "Update",
                 "Delete"
             });
         }
@@ -389,6 +408,120 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         });
     }
     
+    class ButtonRenderer extends JButton implements TableCellRenderer {
+        
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText(value == null ? "" : value.toString());
+            return this;
+        }
+        
+    }
+    
+    class DeleteButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private FileHandler fh = new FileHandler("user.txt");
+        
+        public DeleteButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            this.fh = fh;
+            
+            button = new JButton("Delete");
+            
+            button.addActionListener(e -> {
+                
+                int confirm = JOptionPane.showConfirmDialog(null, "Delete this user?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+                if (confirm != JOptionPane.YES_OPTION) return;
+                
+                fireEditingStopped();
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String userID = table.getValueAt(row, 0).toString();
+                
+                try {
+                    fh.deleteRecord(userID);
+                    ((DefaultTableModel) table.getModel()).removeRow(row);
+                    JOptionPane.showMessageDialog(null, "User successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Delete";
+        }
+    }
+    
+    class UpdateButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private FileHandler fh = new FileHandler("user.txt");
+        
+        public UpdateButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            this.fh = fh;
+            
+            button = new JButton("Update");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                int confirm = JOptionPane.showConfirmDialog(null, "Update this user?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+                if (confirm != JOptionPane.YES_OPTION) return;
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String userID = table.getValueAt(row, 0).toString();
+                String username = table.getValueAt(row, 1).toString();
+                String password = table.getValueAt(row, 2).toString();
+                String role = table.getValueAt(row, 3).toString();
+                
+                String newRecord = userID + "|" + username + "|" + password + "|" + role;
+                
+                try {
+                    fh.updateRecord(userID, newRecord);
+                    JOptionPane.showMessageDialog(null, "User successfully updated", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+  
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Update";
+        }
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
