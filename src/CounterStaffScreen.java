@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalTime;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -33,15 +34,20 @@ public class CounterStaffScreen extends javax.swing.JFrame {
     public CounterStaffScreen() throws IOException {
         initComponents();
         
+        tAppointments.getColumnModel().getColumn(5)
+            .setCellRenderer(new ButtonRenderer());
+        tAppointments.getColumnModel().getColumn(5)
+            .setCellEditor(new AppointmentSelectButtonEditor(new JCheckBox(), tAppointments));
+        
         tCustomers.getColumnModel().getColumn(4)
             .setCellRenderer(new ButtonRenderer());
         tCustomers.getColumnModel().getColumn(4)
-            .setCellEditor(new UpdateButtonEditor(new JCheckBox(), tCustomers));
+            .setCellEditor(new CustomerUpdateButtonEditor(new JCheckBox(), tCustomers));
 
         tCustomers.getColumnModel().getColumn(5)
             .setCellRenderer(new ButtonRenderer());
         tCustomers.getColumnModel().getColumn(5)
-            .setCellEditor(new DeleteButtonEditor(new JCheckBox(), tCustomers));
+            .setCellEditor(new CustomerDeleteButtonEditor(new JCheckBox(), tCustomers));
         
         onStart();
 
@@ -56,10 +62,21 @@ public class CounterStaffScreen extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bgAppointmentType = new javax.swing.ButtonGroup();
         bExit = new javax.swing.JButton();
         lUser = new javax.swing.JLabel();
         tpTabs = new javax.swing.JTabbedPane();
         pManageAppointments = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tAppointments = new javax.swing.JTable();
+        tfAppointmentID = new javax.swing.JTextField();
+        rbAppointmentTypeNormal = new javax.swing.JRadioButton();
+        rbAppointmentTypeMajor = new javax.swing.JRadioButton();
+        cbAssignTechnician = new javax.swing.JComboBox<>();
+        bAssignAppointment = new javax.swing.JButton();
+        lAppointmentID = new javax.swing.JLabel();
+        lAppointmentType = new javax.swing.JLabel();
+        lAssignTechnician = new javax.swing.JLabel();
         pManageCustomers = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tCustomers = new javax.swing.JTable();
@@ -102,17 +119,75 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         tpTabs.setRequestFocusEnabled(false);
 
         pManageAppointments.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        pManageAppointments.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout pManageAppointmentsLayout = new javax.swing.GroupLayout(pManageAppointments);
-        pManageAppointments.setLayout(pManageAppointmentsLayout);
-        pManageAppointmentsLayout.setHorizontalGroup(
-            pManageAppointmentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
-        );
-        pManageAppointmentsLayout.setVerticalGroup(
-            pManageAppointmentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 475, Short.MAX_VALUE)
-        );
+        tAppointments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Appointment ID", "Location", "Date", "Time", "Customer Name", "Action"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tAppointments);
+        if (tAppointments.getColumnModel().getColumnCount() > 0) {
+            tAppointments.getColumnModel().getColumn(0).setResizable(false);
+            tAppointments.getColumnModel().getColumn(1).setResizable(false);
+            tAppointments.getColumnModel().getColumn(2).setResizable(false);
+            tAppointments.getColumnModel().getColumn(3).setResizable(false);
+            tAppointments.getColumnModel().getColumn(4).setResizable(false);
+            tAppointments.getColumnModel().getColumn(5).setResizable(false);
+        }
+
+        pManageAppointments.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 670, 260));
+
+        tfAppointmentID.setEditable(false);
+        tfAppointmentID.setEnabled(false);
+        tfAppointmentID.setFocusable(false);
+        tfAppointmentID.setRequestFocusEnabled(false);
+        pManageAppointments.add(tfAppointmentID, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 180, 40));
+
+        bgAppointmentType.add(rbAppointmentTypeNormal);
+        rbAppointmentTypeNormal.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        rbAppointmentTypeNormal.setText("Normal Service");
+        pManageAppointments.add(rbAppointmentTypeNormal, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 150, -1));
+
+        bgAppointmentType.add(rbAppointmentTypeMajor);
+        rbAppointmentTypeMajor.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        rbAppointmentTypeMajor.setText("Major Service");
+        pManageAppointments.add(rbAppointmentTypeMajor, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 130, -1));
+
+        cbAssignTechnician.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        pManageAppointments.add(cbAssignTechnician, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 90, 130, 40));
+
+        bAssignAppointment.setBackground(new java.awt.Color(102, 102, 255));
+        bAssignAppointment.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        bAssignAppointment.setText("ASSIGN");
+        bAssignAppointment.addActionListener(this::bAssignAppointmentActionPerformed);
+        pManageAppointments.add(bAssignAppointment, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 90, 100, 40));
+
+        lAppointmentID.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lAppointmentID.setText("APPOINTMENT ID");
+        pManageAppointments.add(lAppointmentID, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 130, 30));
+
+        lAppointmentType.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lAppointmentType.setText("APPOINTMENT TYPE");
+        pManageAppointments.add(lAppointmentType, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, -1, -1));
+
+        lAssignTechnician.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lAssignTechnician.setText("ASSIGN TECHNICIAN");
+        pManageAppointments.add(lAssignTechnician, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 50, 140, 30));
 
         tpTabs.addTab("Manage Appointments", pManageAppointments);
 
@@ -137,7 +212,6 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tCustomers.setColumnSelectionAllowed(false);
         jScrollPane1.setViewportView(tCustomers);
         if (tCustomers.getColumnModel().getColumnCount() > 0) {
             tCustomers.getColumnModel().getColumn(0).setResizable(false);
@@ -267,17 +341,19 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         
         try {
             bUpdateData.setEnabled(false);
-            User user = loadUser();
+            User user = loadCurrentUser();
             
             if(currentPassword.equals(user.getPassword())) {
-               User u;
-               u = new CounterStaff(tfCurrentID.getText(), newUsername, newPassword, tfCurrentRole.getText());
+               user.setUsername(newUsername);
+               user.setPassword(newPassword);
+               
+               user.toString();
                
                FileHandler fh = new FileHandler("user.txt");
-               fh.updateRecord(tfCurrentID.getText().trim(), u.toString());
+               fh.updateRecord(tfCurrentID.getText().trim(), user.toString());
                
                FileHandler fh2 = new FileHandler("login.txt");
-               fh2.writeLoginUserRecord(u);
+               fh2.writeLoginUserRecord(user);
                
                tfUsername.setText(newUsername);
                tfPassword.setText(newPassword);
@@ -324,8 +400,80 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         tfNewCustomerID.setText("");
         
     }//GEN-LAST:event_bCreateUserActionPerformed
+
+    private void bAssignAppointmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAssignAppointmentActionPerformed
+        String appointmentID = tfAppointmentID.getText();
+        String appointmentType = "";
+        LocalTime appointmentEndTime = null;
+        
+        FileHandler fh = new FileHandler("appointment.txt");
+        
+        if (rbAppointmentTypeNormal.isSelected()) {
+                appointmentType = "NORMAL";
+            } else if (rbAppointmentTypeMajor.isSelected()) {
+                appointmentType = "MAJOR";
+            }
+        
+        if (appointmentID.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please select Appointment!", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (appointmentType.equals("")) {
+            JOptionPane.showMessageDialog(null, "Please select Appointment Type!", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            CounterStaff counterStaff = (CounterStaff) loadCurrentUser();
+            Appointment appointment = dh.getAppointmentByID(appointmentID);
+            
+            String technicianUsername = (String) cbAssignTechnician.getSelectedItem();
+            
+            Technician technician = (Technician) dh.getUserByUsername(technicianUsername);
+            
+            if (technician == null) {
+                JOptionPane.showMessageDialog(null, "Please select a technician!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            appointment.setTechnician(technician);
+          
+            switch (appointmentType) {
+                case ("NORMAL") :
+                    appointmentEndTime = appointment.getAppointmentStartTime().plusHours(1);
+                    break;
+                case ("MAJOR") :
+                    appointmentEndTime = appointment.getAppointmentStartTime().plusHours(3);
+                    break;
+            }
+            
+            if(!dh.isTechnicianAvailable(technician.getUserID(), appointment.getAppointmentDate(), appointment.getAppointmentStartTime(), appointmentEndTime)) {
+                JOptionPane.showMessageDialog(null, "Technician is Busy!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            appointment.setAppointmentType(appointmentType);
+            appointment.setAppointmentStatus("ASSIGNED");
+            appointment.setAppointmentPaymentStatus("UNPAID");
+            appointment.setAppointmentEndTime(appointmentEndTime);
+            appointment.setCounterStaff(counterStaff);
+            
+            
+            fh.updateRecord(appointmentID, appointment.toString());
+            JOptionPane.showMessageDialog(null, "Appointment successfully assigned!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+            
+            dh.loadUsers();
+            dh.loadAppointments();
+            loadAppointmentTable();
+            
+        } catch (IOException ex) {
+            System.getLogger(CounterStaffScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+       
+        
+    }//GEN-LAST:event_bAssignAppointmentActionPerformed
     
-    private User loadUser() throws FileNotFoundException, IOException {
+    private User loadCurrentUser() throws FileNotFoundException, IOException {
         String currentUserID = null;
         
         try(BufferedReader br = new BufferedReader(new FileReader("login.txt"))){
@@ -358,10 +506,41 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         }
     }
     
+    private void loadAppointmentTable() throws IOException {
+        Appointment [] appointments = dh.getAppointmentByStatus("REQUESTED");
+        
+        DefaultTableModel model = (DefaultTableModel) tAppointments.getModel();
+        model.setRowCount(0);
+        
+        for (Appointment a : appointments) {
+            
+            if (a == null) continue;
+            
+            model.addRow(new Object[] {
+                a.getAppointmentID(),
+                a.getAppointmentLocation(),
+                a.getAppointmentDate(),
+                a.getAppointmentStartTime(),
+                a.getCustomer().getUsername(),
+                "Select"
+            });
+        }
+    }
+    
+    private void loadTechnicianComboBox() throws IOException {
+        
+        cbAssignTechnician.removeAllItems();
+        
+        for (User u : dh.getUserByRole("TECHNICIAN")) {
+            cbAssignTechnician.addItem(u.getUsername());
+        }
+    }
+    
     private void onStart() throws FileNotFoundException, IOException{
         
         dh.loadUsers();
-        User user = loadUser();
+        dh.loadAppointments();
+        User user = loadCurrentUser();
          
         String username = user.getUsername();
         String password = user.getPassword();
@@ -374,6 +553,8 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         tfUsername.setText(username);
         tfPassword.setText(password);
         loadUserTable();
+        loadAppointmentTable();
+        loadTechnicianComboBox();
     }
 
     
@@ -419,17 +600,17 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         
     }
     
-    class DeleteButtonEditor extends DefaultCellEditor {
+    class CustomerDeleteButtonEditor extends DefaultCellEditor {
         
         private JButton button;
         private JTable table;
         private FileHandler fh = new FileHandler("user.txt");
+        private FileHandler fh2 = new FileHandler("appointment.txt");
         
-        public DeleteButtonEditor(JCheckBox checkBox, JTable table) {
+        public CustomerDeleteButtonEditor(JCheckBox checkBox, JTable table) {
             
             super(checkBox);
             this.table = table;
-            this.fh = fh;
             
             button = new JButton("Delete");
             
@@ -447,9 +628,17 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 String userID = table.getValueAt(row, 0).toString();
                 
                 try {
+                    String[] IDs = dh.getAppointmentIDsByUserID(userID);
+                    System.out.println(java.util.Arrays.toString(IDs));
+                    fh2.deleteRecords(IDs);
                     fh.deleteRecord(userID);
                     ((DefaultTableModel) table.getModel()).removeRow(row);
                     JOptionPane.showMessageDialog(null, "User successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+                  
+                    dh.loadUsers();
+                    dh.loadAppointments();
+                    loadAppointmentTable();
+                    
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -469,17 +658,16 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         }
     }
     
-    class UpdateButtonEditor extends DefaultCellEditor {
+    class CustomerUpdateButtonEditor extends DefaultCellEditor {
         
         private JButton button;
         private JTable table;
         private FileHandler fh = new FileHandler("user.txt");
         
-        public UpdateButtonEditor(JCheckBox checkBox, JTable table) {
+        public CustomerUpdateButtonEditor(JCheckBox checkBox, JTable table) {
             
             super(checkBox);
             this.table = table;
-            this.fh = fh;
             
             button = new JButton("Update");
             
@@ -504,6 +692,9 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 try {
                     fh.updateRecord(userID, newRecord);
                     JOptionPane.showMessageDialog(null, "User successfully updated", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+                    dh.loadUsers();
+                    dh.loadAppointments();
+                    loadAppointmentTable();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -523,12 +714,58 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         }
     }
     
+    class AppointmentSelectButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        
+        public AppointmentSelectButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            
+            button = new JButton("Select");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String appointmentID = table.getValueAt(row, 0).toString(); 
+                tfAppointmentID.setText(appointmentID);
+            
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Select";
+        }
+    }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bAssignAppointment;
     private javax.swing.JButton bCreateUser;
     private javax.swing.JButton bExit;
     private javax.swing.JButton bUpdateData;
+    private javax.swing.ButtonGroup bgAppointmentType;
+    private javax.swing.JComboBox<String> cbAssignTechnician;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lAppointmentID;
+    private javax.swing.JLabel lAppointmentType;
+    private javax.swing.JLabel lAssignTechnician;
     private javax.swing.JLabel lBackground;
     private javax.swing.JLabel lCurrentPassword;
     private javax.swing.JLabel lID;
@@ -544,7 +781,11 @@ public class CounterStaffScreen extends javax.swing.JFrame {
     private javax.swing.JPanel pManageAppointments;
     private javax.swing.JPanel pManageCustomers;
     private javax.swing.JPanel pProfile;
+    private javax.swing.JRadioButton rbAppointmentTypeMajor;
+    private javax.swing.JRadioButton rbAppointmentTypeNormal;
+    private javax.swing.JTable tAppointments;
     private javax.swing.JTable tCustomers;
+    private javax.swing.JTextField tfAppointmentID;
     private javax.swing.JTextField tfCurrentID;
     private javax.swing.JPasswordField tfCurrentPassword;
     private javax.swing.JTextField tfCurrentRole;
