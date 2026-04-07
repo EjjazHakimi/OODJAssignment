@@ -355,6 +355,8 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                FileHandler fh2 = new FileHandler("login.txt");
                fh2.writeLoginUserRecord(user);
                
+               JOptionPane.showMessageDialog(null, "Successfully updated User Profile!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+               
                tfUsername.setText(newUsername);
                tfPassword.setText(newPassword);
                tfCurrentPassword.setText("");
@@ -460,6 +462,9 @@ public class CounterStaffScreen extends javax.swing.JFrame {
             
             fh.updateRecord(appointmentID, appointment.toString());
             JOptionPane.showMessageDialog(null, "Appointment successfully assigned!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+            
+            tfAppointmentID.setText("");
+            bgAppointmentType.clearSelection();
             
             dh.loadUsers();
             dh.loadAppointments();

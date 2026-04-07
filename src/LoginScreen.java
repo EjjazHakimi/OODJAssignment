@@ -122,7 +122,9 @@ public class LoginScreen extends javax.swing.JFrame {
                         //to customer screen
                         break;
                     case "TECHNICIAN":
-                        //to technician screen
+                        TechnicianScreen ts = new TechnicianScreen();
+                        ts.show();
+                        dispose();
                         break;
                     case "COUNTERSTAFF":
                         CounterStaffScreen css = new CounterStaffScreen();
