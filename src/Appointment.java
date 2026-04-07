@@ -1,4 +1,8 @@
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+
 /**
  *
  * @author ejjaz
@@ -8,21 +12,23 @@ public class Appointment implements FileHandlerInterface {
     private String appointmentType;
     private String appointmentLocation;
     private String appointmentDate;
-    private String appointmentStartTime;
+    private LocalTime appointmentStartTime;
+    private LocalTime appointmentEndTime;
     private String appointmentStatus;
-    private boolean appointmentPaymentStatus;
+    private String appointmentPaymentStatus;
     private Technician technician;
     private Customer customer;
     private CounterStaff counterStaff;
     
     public Appointment(String appointmentID, String appointmentLocation, 
-            String appointmentType, String appointmentDate, String appointmentStartTime, 
-            String appointmentStatus, boolean appointmentPaymentStatus, Technician technician, Customer customer, CounterStaff counterStaff) {
+            String appointmentType, String appointmentDate, LocalTime appointmentStartTime, LocalTime appointmentEndTime, 
+            String appointmentStatus, String appointmentPaymentStatus, Technician technician, Customer customer, CounterStaff counterStaff) {
         this.appointmentID = appointmentID;
         this.appointmentLocation = appointmentLocation;
         this.appointmentType = appointmentType;
         this.appointmentDate = appointmentDate;
         this.appointmentStartTime = appointmentStartTime;
+        this.appointmentEndTime = appointmentEndTime;
         this.appointmentStatus = appointmentStatus;
         this.appointmentPaymentStatus = appointmentPaymentStatus;
         this.technician = technician;
@@ -46,15 +52,19 @@ public class Appointment implements FileHandlerInterface {
         return appointmentDate;
     }
     
-    public String getAppointmentStartTime() {
+    public LocalTime getAppointmentStartTime() {
         return appointmentStartTime;
+    }
+    
+    public LocalTime getAppointmentEndTime() {
+        return appointmentEndTime;
     }
     
     public String getAppointmentStatus() {
         return appointmentStatus;
     }
     
-    public boolean getAppointmentPaymentStatus() {
+    public String getAppointmentPaymentStatus() {
         return appointmentPaymentStatus;
     }
     
@@ -70,31 +80,43 @@ public class Appointment implements FileHandlerInterface {
         return counterStaff;
     }
     
+    public void setAppointmentType(String newAppointmentType) {
+        this.appointmentType = newAppointmentType;
+    }
+    
     public void setAppointmentDate(String newAppointmentDate) {
         this.appointmentDate = newAppointmentDate;
     }
     
-    public void setAppointmentStartTime(String newAppointmentStartTime) {
+    public void setAppointmentStartTime(LocalTime newAppointmentStartTime) {
         this.appointmentStartTime = newAppointmentStartTime;
+    }
+    
+    public void setAppointmentEndTime(LocalTime newAppointmentEndTime) {
+        this.appointmentEndTime = newAppointmentEndTime;
     }
     
     public void setAppointmentStatus(String currentAppointmentStatus) {
         this.appointmentStatus = currentAppointmentStatus;
     }
     
-    public void setAppointmentPaymentStatus(boolean currentAppointmentPaymentStatus) {
-        this.appointmentPaymentStatus = !currentAppointmentPaymentStatus;
+    public void setAppointmentPaymentStatus(String currentAppointmentPaymentStatus) {
+        this.appointmentPaymentStatus = currentAppointmentPaymentStatus;
     }
     
     public void setTechnician(Technician newTechnician) {
         this.technician = newTechnician;
     }
     
+    public void setCounterStaff(CounterStaff newCounterStaff) {
+        this.counterStaff = newCounterStaff;
+    }
+    
     @Override
     public String toString(){
         return appointmentID + "|" + appointmentLocation + "|" + appointmentType + "|" + 
-                appointmentDate + "|" + appointmentStartTime + "|" + 
-                appointmentStatus + "|" + appointmentPaymentStatus + "|" +
+                appointmentDate + "|" + appointmentStartTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "|" + 
+                appointmentEndTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "|" + appointmentStatus + "|" + appointmentPaymentStatus + "|" +
                 technician.getUserID() + "|" + customer.getUserID() + "|" + counterStaff.getUserID();
     }
 

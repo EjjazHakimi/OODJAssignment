@@ -77,6 +77,46 @@ public class FileHandler {
         }
     }
     
+    public void deleteRecords(String [] recordIDs) throws FileNotFoundException, IOException {
+        File inputFile = new File(filename);
+        File tempFile = new File("temp.txt");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
+            String line;
+            
+            while((line = br.readLine()) != null) {
+                String [] records = line.split("\\|");
+                
+                if (records.length == 0) continue;
+                String currentID = records[0].trim();
+                
+                boolean shouldDelete = false;
+                
+                for(String id: recordIDs) {
+                    if (currentID.equals(id.trim())) {
+                        shouldDelete = true;
+                        break;
+                    }
+                }
+                
+                if (!shouldDelete) {
+                    bw.write(line);
+                    bw.newLine();
+                }   
+            }
+        }
+        if (!inputFile.delete()) {
+            System.out.println("Failed to delete input file: " + inputFile);
+            return;
+    }
+
+        if (!tempFile.renameTo(inputFile)) {
+            System.out.println("Failed to rename temp file: " + tempFile);
+            return;
+        }
+    }
+    
     public void updateRecord(String recordID, String newRecord) throws FileNotFoundException, IOException{
         
         System.out.println("WRITE user.txt");

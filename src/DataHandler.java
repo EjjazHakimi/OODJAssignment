@@ -2,6 +2,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 
 /*
@@ -114,6 +116,15 @@ public class DataHandler {
         return null;
     }
     
+    public User getUserByUsername(String username) {
+        for(int i = 0; i < userCount; i++) {
+            if(users[i].getUsername().equals(username)) {
+                return users[i];
+            }
+        }
+        return null;
+    }
+    
     public Appointment [] loadAppointments() throws IOException {
         
         appointmentCount = 0;
@@ -126,14 +137,19 @@ public class DataHandler {
                 String appointmentLocation = appointmentRecord[1];
                 String appointmentType = appointmentRecord[2];
                 String appointmentDate = appointmentRecord[3];
-                String appointmentStartTime = appointmentRecord[4];
-                String appointmentStatus = appointmentRecord[5];
-
-                boolean appointmentPaymentStatus = Boolean.parseBoolean(appointmentRecord[6]);
+                LocalTime appointmentStartTime = LocalTime.parse(appointmentRecord[4], DateTimeFormatter.ofPattern("HH:mm"));
                 
-                String technicianID = appointmentRecord[7];
-                String customerID = appointmentRecord[8];
-                String counterStaffID = appointmentRecord[9];
+                LocalTime appointmentEndTime = null;
+                if (!appointmentRecord[5].equalsIgnoreCase("null")) {
+                    appointmentEndTime = LocalTime.parse(appointmentRecord[5].trim(), DateTimeFormatter.ofPattern("HH:mm"));
+                }
+                
+                String appointmentStatus = appointmentRecord[6];
+                String appointmentPaymentStatus = appointmentRecord[7];
+              
+                String technicianID = appointmentRecord[8];
+                String customerID = appointmentRecord[9];
+                String counterStaffID = appointmentRecord[10];
                 
                 Technician technician = (Technician) getUserByID(technicianID);
                 Customer customer = (Customer) getUserByID(customerID);
@@ -141,7 +157,7 @@ public class DataHandler {
                 
                 appointments[appointmentCount++] = new Appointment(
                     appointmentID, appointmentLocation, appointmentType,
-                    appointmentDate, appointmentStartTime, appointmentStatus, 
+                    appointmentDate, appointmentStartTime, appointmentEndTime, appointmentStatus, 
                     appointmentPaymentStatus, technician, customer, counterStaff);
             } 
         }      
@@ -155,6 +171,38 @@ public class DataHandler {
             }
         }
         return null;
+    }
+    
+    public Appointment [] getAppointmentByUserID(String ID) {
+        
+        Appointment [] result = new Appointment[maxCount];
+        int count = 0;
+        
+        for(int i = 0; i < appointmentCount; i++) {
+                 
+            if(appointments[i] != null && appointments[i].getCustomer() != null &&
+                    appointments[i].getCustomer().getUserID().trim().equalsIgnoreCase(ID)) {
+                
+                result[count++] = appointments[i];
+            }
+        }
+        
+        return java.util.Arrays.copyOf(result, count);
+    }
+    
+    public Appointment [] getAppointmentByStatus(String status) {
+        
+        Appointment [] result = new Appointment[maxCount];
+        int count = 0;
+        
+        for(int i = 0; i < appointmentCount; i++) {
+                 
+            if(appointments[i] != null && appointments[i].getAppointmentStatus().trim().equalsIgnoreCase(status)) {
+                result[count++] = appointments[i];
+            }
+        }
+        
+        return java.util.Arrays.copyOf(result, count);
     }
     
     public Payment [] loadPayments() throws IOException {
@@ -281,5 +329,48 @@ public class DataHandler {
                         break;
         }
         return u;
+    }
+    
+    public String [] getAppointmentIDsByUserID(String ID) {
+        
+        Appointment [] a = getAppointmentByUserID(ID);
+        
+        String [] IDs = new String[a.length];
+        
+        for (int i = 0; i < a.length; i++) {
+            IDs[i] = a[i].getAppointmentID();
+        }
+        
+        return IDs;
+        
+    }
+    
+    public boolean isTechnicianAvailable(String technicianID, String date, LocalTime startTime, LocalTime endTime) {
+        
+        for (int i = 0; i < appointmentCount; i++) {
+
+            Appointment a = appointments[i];
+
+            if (a == null) continue;
+            
+            if (a.getTechnician() == null) continue;
+
+            if (!a.getTechnician().getUserID().equalsIgnoreCase(technicianID)) continue;
+
+            if (!a.getAppointmentDate().equals(date)) continue;
+
+            LocalTime existingStart = a.getAppointmentStartTime();
+            LocalTime existingEnd = a.getAppointmentEndTime();
+
+            if (existingEnd == null) continue;
+
+            boolean overlap = startTime.isBefore(existingEnd) && endTime.isAfter(existingStart);
+
+            if (overlap) {
+                return false;
+            }
+            
+        }
+        return true;
     }
 }
