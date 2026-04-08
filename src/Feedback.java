@@ -34,6 +34,17 @@ public class Feedback implements FileHandlerInterface {
         return technicianFeedback;
     }
     
+    public Appointment getAppointment() {
+        return appointment;
+    }
+    
+    public Customer getCustomer() {
+        return customer;
+    }
+    
+    public Technician getTechnician() {
+        return technician;
+    }
     
     public void setCustomerFeedback(String finalCustomerFeedback) {
         this.customerFeedback = finalCustomerFeedback;
@@ -41,6 +52,10 @@ public class Feedback implements FileHandlerInterface {
     
     public void setTechnicianFeedback(String finalTechnicianFeedback) {
         this.technicianFeedback = finalTechnicianFeedback;
+    }
+    
+    public void setTechnician(Technician newTechnician) {
+        this.technician = newTechnician;
     }
     
     
