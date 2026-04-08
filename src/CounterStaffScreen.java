@@ -545,6 +545,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         
         dh.loadUsers();
         dh.loadAppointments();
+        dh.loadFeedback();
         User user = loadCurrentUser();
          
         String username = user.getUsername();
@@ -611,6 +612,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         private JTable table;
         private FileHandler fh = new FileHandler("user.txt");
         private FileHandler fh2 = new FileHandler("appointment.txt");
+        private FileHandler fh3 = new FileHandler("feedback.txt");
         
         public CustomerDeleteButtonEditor(JCheckBox checkBox, JTable table) {
             
@@ -633,9 +635,10 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 String userID = table.getValueAt(row, 0).toString();
                 
                 try {
-                    String[] IDs = dh.getAppointmentIDsByUserID(userID);
-                    System.out.println(java.util.Arrays.toString(IDs));
-                    fh2.deleteRecords(IDs);
+                    String[] feedbackIDs = dh.getFeedbackIDsByUserID(userID);
+                    String[] appointmentIDs = dh.getAppointmentIDsByUserID(userID);
+                    fh3.deleteRecords(feedbackIDs);
+                    fh2.deleteRecords(appointmentIDs);
                     fh.deleteRecord(userID);
                     ((DefaultTableModel) table.getModel()).removeRow(row);
                     JOptionPane.showMessageDialog(null, "User successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);

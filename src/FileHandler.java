@@ -162,5 +162,35 @@ public class FileHandler {
     public void resetFile() throws IOException {
         new FileWriter(filename, false).close();
     }
- 
+    
+    public String generateNextID(String prefix) throws IOException {
+        
+        String lastLine = null;
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    lastLine = line;
+                }
+            }
+        
+            if (lastLine == null) {
+                return prefix + String.format("%06d", 0);
+            }
+        
+            String lastID = lastLine.split("\\|")[0];
+        
+            if (!lastID.startsWith(prefix)) {
+                throw new IllegalStateException("Invalid ID prefix in file: " + lastID);
+            }
+        
+            int number = Integer.parseInt(lastID.substring(prefix.length()));
+            number++;
+        
+            return prefix + String.format("%06d", number);
+        }
+    }
 }

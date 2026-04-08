@@ -371,7 +371,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
         bUpdateData.addActionListener(this::bUpdateDataActionPerformed);
         pProfile.add(bUpdateData, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 340, 130, 50));
 
-        tpTabs.addTab("Manage Profile", pProfile);
+        tpTabs.addTab("Profile", pProfile);
 
         getContentPane().add(tpTabs, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 750, 500));
 

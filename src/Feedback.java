@@ -67,6 +67,7 @@ public class Feedback implements FileHandlerInterface {
     @Override
     public String toString() {
         return feedbackID + "|" + customerFeedback + "|" + technicianFeedback + "|" 
-                + appointment.getAppointmentID() + "|" + customer.getUserID() + "|" + technician.getUserID();
+                + appointment.getAppointmentID() + "|" + customer.getUserID() + "|" + 
+                (technician != null ? technician.getUserID() : "null");
     }    
 }

@@ -116,8 +116,10 @@ public class Appointment implements FileHandlerInterface {
     public String toString(){
         return appointmentID + "|" + appointmentLocation + "|" + appointmentType + "|" + 
                 appointmentDate + "|" + appointmentStartTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "|" + 
-                appointmentEndTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "|" + appointmentStatus + "|" + appointmentPaymentStatus + "|" +
-                technician.getUserID() + "|" + customer.getUserID() + "|" + counterStaff.getUserID();
+                (appointmentEndTime != null ? appointmentEndTime.format(DateTimeFormatter.ofPattern("HH:mm")) : "null") + "|" + 
+                appointmentStatus + "|" + appointmentPaymentStatus + "|" +
+                (technician != null ? technician.getUserID() : "null") + "|" + customer.getUserID() + "|" + 
+                (counterStaff != null ? counterStaff.getUserID() : "null");
     }
 
     @Override
