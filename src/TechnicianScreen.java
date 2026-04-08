@@ -27,6 +27,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TechnicianScreen.class.getName());
     private DataHandler dh = new DataHandler();
+    private ExportHandler eh = new ExportHandler();
 
     /**
      * Creates new form TechnicianScreen
@@ -71,6 +72,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
         lAppointmentEndTime = new javax.swing.JLabel();
         lCustomerComment = new javax.swing.JLabel();
         bCompleteAppointment = new javax.swing.JButton();
+        bExportSchedule = new javax.swing.JButton();
         pManageFeedback = new javax.swing.JPanel();
         pProfile = new javax.swing.JPanel();
         tfCurrentID = new javax.swing.JTextField();
@@ -204,6 +206,12 @@ public class TechnicianScreen extends javax.swing.JFrame {
         bCompleteAppointment.setText("COMPLETE APPOINTMENT");
         bCompleteAppointment.addActionListener(this::bCompleteAppointmentActionPerformed);
         pManageAppointments.add(bCompleteAppointment, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 380, 180, 60));
+
+        bExportSchedule.setBackground(new java.awt.Color(102, 255, 153));
+        bExportSchedule.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        bExportSchedule.setText("EXPORT SCHEDULE");
+        bExportSchedule.addActionListener(this::bExportScheduleActionPerformed);
+        pManageAppointments.add(bExportSchedule, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 380, 190, 60));
 
         tpTabs.addTab("Manage Appointments", pManageAppointments);
 
@@ -353,6 +361,30 @@ public class TechnicianScreen extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_bCompleteAppointmentActionPerformed
+
+    private void bExportScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExportScheduleActionPerformed
+        
+        FileHandler fh = new FileHandler("myAppointment.txt");
+
+        int rowCount = tAppointments.getRowCount();
+        
+        try {
+            fh.resetFile();
+            for(int i = 0; i < rowCount; i++) {
+         
+                String appointmentID = tAppointments.getValueAt(i, 0).toString();
+                Appointment appointment = dh.getAppointmentByID(appointmentID);
+                
+                if(appointment != null) {
+                    fh.writeRecord(appointment);
+                }
+            }
+            eh.appointmentTxtToExcel("myAppointment.txt");
+            JOptionPane.showMessageDialog(null, "Schedule Exported Successfully!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            System.getLogger(TechnicianScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }//GEN-LAST:event_bExportScheduleActionPerformed
     
     private User loadCurrentUser() throws FileNotFoundException, IOException {
         String currentUserID = null;
@@ -507,6 +539,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCompleteAppointment;
     private javax.swing.JButton bExit;
+    private javax.swing.JButton bExportSchedule;
     private javax.swing.JButton bUpdateData;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

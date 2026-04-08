@@ -42,6 +42,13 @@ public class FileHandler {
         }
     }
     
+    public void overwriteRecord(FileHandlerInterface record) throws FileNotFoundException, IOException {
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filename, false))) {
+            bw.write(record.toString());
+            bw.newLine();
+        }
+    }
+    
     public void writeLoginUserRecord(FileHandlerInterface record) throws FileNotFoundException, IOException {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(filename, false))) {
             bw.write(record.toString());
@@ -150,6 +157,10 @@ public class FileHandler {
             System.out.println("Failed to rename temp file: " + tempFile);
             return;
         } 
+    }
+    
+    public void resetFile() throws IOException {
+        new FileWriter(filename, false).close();
     }
  
 }
