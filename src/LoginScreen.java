@@ -119,7 +119,9 @@ public class LoginScreen extends javax.swing.JFrame {
                 
                 switch(role) {
                     case "CUSTOMER":
-                        //to customer screen
+                        CustomerScreen cs = new CustomerScreen();
+                        cs.show();
+                        dispose();
                         break;
                     case "TECHNICIAN":
                         TechnicianScreen ts = new TechnicianScreen();

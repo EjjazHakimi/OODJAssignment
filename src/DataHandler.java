@@ -287,6 +287,23 @@ public class DataHandler {
         return null;
     }
     
+    public Feedback [] getFeedbackByUserID(String ID) {
+        
+        Feedback [] result = new Feedback[maxCount];
+        int count = 0;
+        
+        for(int i = 0; i < feedbackCount; i++) {
+                 
+            if(feedbacks[i] != null && feedbacks[i].getCustomer() != null &&
+                    feedbacks[i].getCustomer().getUserID().trim().equalsIgnoreCase(ID)) {
+                
+                result[count++] = feedbacks[i];
+            }
+        }
+        
+        return java.util.Arrays.copyOf(result, count);
+    }
+    
     public User Login(String loginID, String loginUsername, String loginPassword) throws IOException {
         User [] users = loadUsers();
         for(User user: users) {
@@ -348,6 +365,20 @@ public class DataHandler {
         
         for (int i = 0; i < a.length; i++) {
             IDs[i] = a[i].getAppointmentID();
+        }
+        
+        return IDs;
+        
+    }
+    
+    public String [] getFeedbackIDsByUserID(String ID) {
+        
+        Feedback [] f = getFeedbackByUserID(ID);
+        
+        String [] IDs = new String[f.length];
+        
+        for (int i = 0; i < f.length; i++) {
+            IDs[i] = f[i].getFeedbackID();
         }
         
         return IDs;
