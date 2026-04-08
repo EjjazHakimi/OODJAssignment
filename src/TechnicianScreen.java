@@ -40,6 +40,11 @@ public class TechnicianScreen extends javax.swing.JFrame {
         tAppointments.getColumnModel().getColumn(3)
             .setCellEditor(new AppointmentSelectButtonEditor(new JCheckBox(), tAppointments));
         
+        tCompletedAppointments.getColumnModel().getColumn(3)
+            .setCellRenderer(new ButtonRenderer());
+        tCompletedAppointments.getColumnModel().getColumn(3)
+            .setCellEditor(new CompletedAppointmentSelectButtonEditor(new JCheckBox(), tCompletedAppointments));
+        
         onStart();
     }
 
@@ -59,14 +64,14 @@ public class TechnicianScreen extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tAppointments = new javax.swing.JTable();
         tfAppointmentID = new javax.swing.JTextField();
-        tfAppointmentDate = new javax.swing.JTextField();
+        tfAppointmentLocation = new javax.swing.JTextField();
         tfAppointmentType = new javax.swing.JTextField();
         tfAppointmentStartTime = new javax.swing.JTextField();
         tfAppointmentEndTime = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         taCustomerFeedback = new javax.swing.JTextArea();
         lAppointmentID = new javax.swing.JLabel();
-        lAppointmentDate = new javax.swing.JLabel();
+        lAppointmentLocation = new javax.swing.JLabel();
         lAppointmentType = new javax.swing.JLabel();
         lAppointmentStartTime = new javax.swing.JLabel();
         lAppointmentEndTime = new javax.swing.JLabel();
@@ -74,6 +79,20 @@ public class TechnicianScreen extends javax.swing.JFrame {
         bCompleteAppointment = new javax.swing.JButton();
         bExportSchedule = new javax.swing.JButton();
         pManageFeedback = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tCompletedAppointments = new javax.swing.JTable();
+        tfCompletedAppointmentID = new javax.swing.JTextField();
+        tfCompletedAppointmentLocation = new javax.swing.JTextField();
+        tfCompletedAppointmentStartTime = new javax.swing.JTextField();
+        tfCompletedAppointmentEndTime = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        taTechnicianFeedback = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        lCompletedAppointmentLocation = new javax.swing.JLabel();
+        lCompletedAppointmentStartTime = new javax.swing.JLabel();
+        lCompletedAppointmentEndTime = new javax.swing.JLabel();
+        lTechnicianFeedback = new javax.swing.JLabel();
+        bSubmitFeedback = new javax.swing.JButton();
         pProfile = new javax.swing.JPanel();
         tfCurrentID = new javax.swing.JTextField();
         tfCurrentRole = new javax.swing.JTextField();
@@ -110,7 +129,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Appointment ID", "Location", "Customer", "Action"
+                "Appointment ID", "Date", "Customer", "Action"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -138,12 +157,12 @@ public class TechnicianScreen extends javax.swing.JFrame {
         tfAppointmentID.setVerifyInputWhenFocusTarget(false);
         pManageAppointments.add(tfAppointmentID, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, 190, 40));
 
-        tfAppointmentDate.setEditable(false);
-        tfAppointmentDate.setEnabled(false);
-        tfAppointmentDate.setFocusable(false);
-        tfAppointmentDate.setRequestFocusEnabled(false);
-        tfAppointmentDate.setVerifyInputWhenFocusTarget(false);
-        pManageAppointments.add(tfAppointmentDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 190, 40));
+        tfAppointmentLocation.setEditable(false);
+        tfAppointmentLocation.setEnabled(false);
+        tfAppointmentLocation.setFocusable(false);
+        tfAppointmentLocation.setRequestFocusEnabled(false);
+        tfAppointmentLocation.setVerifyInputWhenFocusTarget(false);
+        pManageAppointments.add(tfAppointmentLocation, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 190, 40));
 
         tfAppointmentType.setEditable(false);
         tfAppointmentType.setEnabled(false);
@@ -181,9 +200,9 @@ public class TechnicianScreen extends javax.swing.JFrame {
         lAppointmentID.setText("APPOINTMENT ID");
         pManageAppointments.add(lAppointmentID, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 220, 150, 30));
 
-        lAppointmentDate.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
-        lAppointmentDate.setText("APPOINTMENT DATE");
-        pManageAppointments.add(lAppointmentDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 290, 170, 30));
+        lAppointmentLocation.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lAppointmentLocation.setText("APPOINTMENT LOCATION");
+        pManageAppointments.add(lAppointmentLocation, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 290, 190, 30));
 
         lAppointmentType.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         lAppointmentType.setText("APPOINTMENT TYPE");
@@ -215,16 +234,94 @@ public class TechnicianScreen extends javax.swing.JFrame {
 
         tpTabs.addTab("Manage Appointments", pManageAppointments);
 
-        javax.swing.GroupLayout pManageFeedbackLayout = new javax.swing.GroupLayout(pManageFeedback);
-        pManageFeedback.setLayout(pManageFeedbackLayout);
-        pManageFeedbackLayout.setHorizontalGroup(
-            pManageFeedbackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
-        );
-        pManageFeedbackLayout.setVerticalGroup(
-            pManageFeedbackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
-        );
+        pManageFeedback.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tCompletedAppointments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Appointment ID", "Date", "Customer Name", "Action"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tCompletedAppointments);
+        if (tCompletedAppointments.getColumnModel().getColumnCount() > 0) {
+            tCompletedAppointments.getColumnModel().getColumn(0).setResizable(false);
+            tCompletedAppointments.getColumnModel().getColumn(1).setResizable(false);
+            tCompletedAppointments.getColumnModel().getColumn(3).setResizable(false);
+        }
+
+        pManageFeedback.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 30, 630, 170));
+
+        tfCompletedAppointmentID.setEditable(false);
+        tfCompletedAppointmentID.setEnabled(false);
+        tfCompletedAppointmentID.setFocusable(false);
+        tfCompletedAppointmentID.setRequestFocusEnabled(false);
+        pManageFeedback.add(tfCompletedAppointmentID, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 250, 190, 40));
+
+        tfCompletedAppointmentLocation.setEditable(false);
+        tfCompletedAppointmentLocation.setEnabled(false);
+        tfCompletedAppointmentLocation.setFocusable(false);
+        tfCompletedAppointmentLocation.setRequestFocusEnabled(false);
+        tfCompletedAppointmentLocation.setVerifyInputWhenFocusTarget(false);
+        pManageFeedback.add(tfCompletedAppointmentLocation, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 340, 190, 40));
+
+        tfCompletedAppointmentStartTime.setEditable(false);
+        tfCompletedAppointmentStartTime.setEnabled(false);
+        tfCompletedAppointmentStartTime.setFocusable(false);
+        tfCompletedAppointmentStartTime.setRequestFocusEnabled(false);
+        tfCompletedAppointmentStartTime.setVerifyInputWhenFocusTarget(false);
+        pManageFeedback.add(tfCompletedAppointmentStartTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 250, 190, 40));
+
+        tfCompletedAppointmentEndTime.setEditable(false);
+        tfCompletedAppointmentEndTime.setEnabled(false);
+        tfCompletedAppointmentEndTime.setFocusable(false);
+        tfCompletedAppointmentEndTime.setRequestFocusEnabled(false);
+        tfCompletedAppointmentEndTime.setVerifyInputWhenFocusTarget(false);
+        pManageFeedback.add(tfCompletedAppointmentEndTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 250, 190, 40));
+
+        taTechnicianFeedback.setColumns(20);
+        taTechnicianFeedback.setRows(5);
+        jScrollPane4.setViewportView(taTechnicianFeedback);
+
+        pManageFeedback.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 340, 290, -1));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        jLabel1.setText("APPOINTMENT ID");
+        pManageFeedback.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 220, 120, 30));
+
+        lCompletedAppointmentLocation.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lCompletedAppointmentLocation.setText("APPOINTMENT LOCATION");
+        pManageFeedback.add(lCompletedAppointmentLocation, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 180, 30));
+
+        lCompletedAppointmentStartTime.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lCompletedAppointmentStartTime.setText("APPOINTMENT START TIME");
+        pManageFeedback.add(lCompletedAppointmentStartTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 220, 190, 30));
+
+        lCompletedAppointmentEndTime.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lCompletedAppointmentEndTime.setText("APPOINTMENT END TIME");
+        pManageFeedback.add(lCompletedAppointmentEndTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 220, 180, 30));
+
+        lTechnicianFeedback.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lTechnicianFeedback.setText("TECHNICIAN FEEDBACK");
+        pManageFeedback.add(lTechnicianFeedback, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 310, 180, 30));
+
+        bSubmitFeedback.setBackground(new java.awt.Color(102, 255, 153));
+        bSubmitFeedback.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        bSubmitFeedback.setText("SUBMIT FEEDBACK");
+        bSubmitFeedback.addActionListener(this::bSubmitFeedbackActionPerformed);
+        pManageFeedback.add(bSubmitFeedback, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 360, 140, 50));
 
         tpTabs.addTab("Manage Feedback", pManageFeedback);
 
@@ -345,7 +442,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
             fh.updateRecord(appointmentID, appointment.toString());
             
             tfAppointmentID.setText("");
-            tfAppointmentDate.setText("");
+            tfAppointmentLocation.setText("");
             tfAppointmentType.setText("");
             tfAppointmentStartTime.setText("");
             tfAppointmentEndTime.setText("");
@@ -355,6 +452,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
             dh.loadUsers();
             dh.loadAppointments();
             loadAppointmentTable();
+            loadCompletedAppointmentTable();
             
         } catch (IOException ex) {
             System.getLogger(TechnicianScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -385,6 +483,51 @@ public class TechnicianScreen extends javax.swing.JFrame {
             System.getLogger(TechnicianScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }//GEN-LAST:event_bExportScheduleActionPerformed
+
+    private void bSubmitFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSubmitFeedbackActionPerformed
+        String technicianFeedback = taTechnicianFeedback.getText();
+        String appointmentID = tfCompletedAppointmentID.getText();
+        
+        FileHandler fh = new FileHandler("appointment.txt");
+        FileHandler fh2 = new FileHandler("feedback.txt");
+        
+        if (appointmentID.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Select Appointment First!", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        else if (technicianFeedback.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Technician Feedback is Empty!", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            Technician technician = (Technician) loadCurrentUser();
+            Appointment appointment = dh.getAppointmentByID(appointmentID);
+            Feedback feedback = dh.getFeedbackByAppointmentID(appointmentID);
+        
+            appointment.setAppointmentStatus("CLOSED");
+        
+            feedback.setTechnicianFeedback(technicianFeedback);
+            feedback.setTechnician(technician);
+            
+            fh.updateRecord(appointmentID, appointment.toString());
+            fh2.updateRecord(feedback.getFeedbackID(), feedback.toString());
+            
+            dh.loadUsers();
+            dh.loadAppointments();
+            loadCompletedAppointmentTable();
+            
+            tfCompletedAppointmentID.setText("");
+            tfCompletedAppointmentLocation.setText("");   
+            tfCompletedAppointmentStartTime.setText("");
+            tfCompletedAppointmentEndTime.setText("");
+            taTechnicianFeedback.setText("");
+            
+            JOptionPane.showMessageDialog(null, "Feedbcak Updated Successfully!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            System.getLogger(TechnicianScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }//GEN-LAST:event_bSubmitFeedbackActionPerformed
     
     private User loadCurrentUser() throws FileNotFoundException, IOException {
         String currentUserID = null;
@@ -419,7 +562,32 @@ public class TechnicianScreen extends javax.swing.JFrame {
             
             model.addRow(new Object[] {
                 a.getAppointmentID(),
-                a.getAppointmentLocation(),
+                a.getAppointmentDate(),
+                a.getCustomer().getUsername(),
+                "Select"
+            });
+        }
+    }
+    
+    private void loadCompletedAppointmentTable() throws IOException {
+        Appointment [] appointments = dh.getAppointmentByStatus("COMPLETED");
+        
+        DefaultTableModel model = (DefaultTableModel) tCompletedAppointments.getModel();
+        model.setRowCount(0);
+        
+        String technicianID = loadCurrentUser().getUserID();
+        
+        for (Appointment a : appointments) {
+            
+            if (a == null) continue;
+            
+            if (a.getTechnician() == null) continue;
+
+            if (!a.getTechnician().getUserID().equalsIgnoreCase(technicianID)) continue;
+            
+            model.addRow(new Object[] {
+                a.getAppointmentID(),
+                a.getAppointmentDate(),
                 a.getCustomer().getUsername(),
                 "Select"
             });
@@ -430,6 +598,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
         
         dh.loadUsers();
         dh.loadAppointments();
+        dh.loadFeedback();
         User user = loadCurrentUser();
          
         String username = user.getUsername();
@@ -443,6 +612,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
         tfUsername.setText(username);
         tfPassword.setText(password);
         loadAppointmentTable();
+        loadCompletedAppointmentTable();
     }
     /**
      * @param args the command line arguments
@@ -492,6 +662,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
         private JTable table;
         private Appointment appointment;
         private LocalTime time;
+        private Feedback feedback;
         
         public AppointmentSelectButtonEditor(JCheckBox checkBox, JTable table) {
             
@@ -513,12 +684,62 @@ public class TechnicianScreen extends javax.swing.JFrame {
                 appointment = dh.getAppointmentByID(appointmentID);
                 
                 tfAppointmentID.setText(appointmentID);
-                tfAppointmentDate.setText(appointment.getAppointmentDate());
+                tfAppointmentLocation.setText(appointment.getAppointmentLocation());
                 tfAppointmentType.setText(appointment.getAppointmentType());
                 
                 tfAppointmentStartTime.setText(appointment.getAppointmentStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
                 tfAppointmentEndTime.setText(appointment.getAppointmentEndTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                
+                feedback = dh.getFeedbackByAppointmentID(appointmentID);
+                
+                taCustomerFeedback.setText(feedback.getCustomerFeedback());
 
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Select";
+        }
+    }
+    
+    class CompletedAppointmentSelectButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private Appointment appointment;
+        private LocalTime time;
+        private Feedback feedback;
+        
+        public CompletedAppointmentSelectButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            
+            button = new JButton("Select");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String appointmentID = table.getValueAt(row, 0).toString(); 
+                
+                appointment = dh.getAppointmentByID(appointmentID);
+                
+                tfCompletedAppointmentID.setText(appointmentID);
+                tfCompletedAppointmentLocation.setText(appointment.getAppointmentLocation());   
+                tfCompletedAppointmentStartTime.setText(appointment.getAppointmentStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                tfCompletedAppointmentEndTime.setText(appointment.getAppointmentEndTime().format(DateTimeFormatter.ofPattern("HH:mm")));
             });
         }
         
@@ -540,32 +761,46 @@ public class TechnicianScreen extends javax.swing.JFrame {
     private javax.swing.JButton bCompleteAppointment;
     private javax.swing.JButton bExit;
     private javax.swing.JButton bExportSchedule;
+    private javax.swing.JButton bSubmitFeedback;
     private javax.swing.JButton bUpdateData;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lAppointmentDate;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lAppointmentEndTime;
     private javax.swing.JLabel lAppointmentID;
+    private javax.swing.JLabel lAppointmentLocation;
     private javax.swing.JLabel lAppointmentStartTime;
     private javax.swing.JLabel lAppointmentType;
     private javax.swing.JLabel lBackground;
+    private javax.swing.JLabel lCompletedAppointmentEndTime;
+    private javax.swing.JLabel lCompletedAppointmentLocation;
+    private javax.swing.JLabel lCompletedAppointmentStartTime;
     private javax.swing.JLabel lCurrentPassword;
     private javax.swing.JLabel lCustomerComment;
     private javax.swing.JLabel lID;
     private javax.swing.JLabel lPassword;
     private javax.swing.JLabel lRole;
+    private javax.swing.JLabel lTechnicianFeedback;
     private javax.swing.JLabel lUser;
     private javax.swing.JLabel lUsername;
     private javax.swing.JPanel pManageAppointments;
     private javax.swing.JPanel pManageFeedback;
     private javax.swing.JPanel pProfile;
     private javax.swing.JTable tAppointments;
+    private javax.swing.JTable tCompletedAppointments;
     private javax.swing.JTextArea taCustomerFeedback;
-    private javax.swing.JTextField tfAppointmentDate;
+    private javax.swing.JTextArea taTechnicianFeedback;
     private javax.swing.JTextField tfAppointmentEndTime;
     private javax.swing.JTextField tfAppointmentID;
+    private javax.swing.JTextField tfAppointmentLocation;
     private javax.swing.JTextField tfAppointmentStartTime;
     private javax.swing.JTextField tfAppointmentType;
+    private javax.swing.JTextField tfCompletedAppointmentEndTime;
+    private javax.swing.JTextField tfCompletedAppointmentID;
+    private javax.swing.JTextField tfCompletedAppointmentLocation;
+    private javax.swing.JTextField tfCompletedAppointmentStartTime;
     private javax.swing.JTextField tfCurrentID;
     private javax.swing.JPasswordField tfCurrentPassword;
     private javax.swing.JTextField tfCurrentRole;

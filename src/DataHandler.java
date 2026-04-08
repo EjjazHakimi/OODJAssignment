@@ -278,6 +278,15 @@ public class DataHandler {
         return null;
     }
     
+    public Feedback getFeedbackByAppointmentID(String ID) {
+        for(int i = 0; i < feedbackCount; i++) {
+            if(feedbacks[i].getAppointment().getAppointmentID().equals(ID)){
+                return feedbacks[i];
+            }
+        }
+        return null;
+    }
+    
     public User Login(String loginID, String loginUsername, String loginPassword) throws IOException {
         User [] users = loadUsers();
         for(User user: users) {
