@@ -107,6 +107,25 @@ public class DataHandler {
         return java.util.Arrays.copyOf(result, count);
     }
     
+    public User [] getUserByRoles(String... roles) {
+        User[] result = new User[maxCount];
+        int count = 0;
+
+        for (int i = 0; i < userCount; i++) {
+            if (users[i] != null) {
+                String userRole = users[i].getUserRole();
+
+                for (String role : roles) {
+                    if (userRole.equalsIgnoreCase(role)) {
+                        result[count++] = users[i];
+                        break;
+                    }
+                }
+            }
+        }   
+        return java.util.Arrays.copyOf(result, count);
+    }
+ 
     public User getUserByID(String ID) {
         for(int i = 0; i < userCount; i++) {
             if(users[i].getUserID().equals(ID)) {
@@ -182,6 +201,23 @@ public class DataHandler {
                  
             if(appointments[i] != null && appointments[i].getCustomer() != null &&
                     appointments[i].getCustomer().getUserID().trim().equalsIgnoreCase(ID)) {
+                
+                result[count++] = appointments[i];
+            }
+        }
+        
+        return java.util.Arrays.copyOf(result, count);
+    }
+    
+    public Appointment [] getAppointmentByTechnicianID(String ID) {
+        
+        Appointment [] result = new Appointment[maxCount];
+        int count = 0;
+        
+        for(int i = 0; i < appointmentCount; i++) {
+                 
+            if(appointments[i] != null && appointments[i].getCustomer() != null &&
+                    appointments[i].getTechnician().getUserID().trim().equalsIgnoreCase(ID)) {
                 
                 result[count++] = appointments[i];
             }
@@ -370,7 +406,7 @@ public class DataHandler {
         return IDs;
         
     }
-    
+   
     public String [] getFeedbackIDsByUserID(String ID) {
         
         Feedback [] f = getFeedbackByUserID(ID);
@@ -398,6 +434,8 @@ public class DataHandler {
             if (!a.getTechnician().getUserID().equalsIgnoreCase(technicianID)) continue;
 
             if (!a.getAppointmentDate().equals(date)) continue;
+            
+            if (!"ASSIGNED".equalsIgnoreCase(a.getAppointmentStatus())) continue;
 
             LocalTime existingStart = a.getAppointmentStartTime();
             LocalTime existingEnd = a.getAppointmentEndTime();
@@ -413,4 +451,13 @@ public class DataHandler {
         }
         return true;
     }
+    
+    public boolean hasAssignedAppointment(Appointment[] appointments) {
+    for (Appointment appointment : appointments) {
+        if (appointment != null && appointment.getAppointmentStatus().equalsIgnoreCase("ASSIGNED")) {
+            return true;
+        }
+    }
+    return false;
+}
 }

@@ -439,6 +439,7 @@ public class CustomerScreen extends javax.swing.JFrame {
         dh.loadUsers();
         dh.loadAppointments();
         dh.loadFeedback();
+        dh.loadPayments();
         User user = loadCurrentUser();
          
         String username = user.getUsername();

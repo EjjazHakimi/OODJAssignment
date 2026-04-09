@@ -546,6 +546,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         dh.loadUsers();
         dh.loadAppointments();
         dh.loadFeedback();
+        dh.loadPayments();
         User user = loadCurrentUser();
          
         String username = user.getUsername();
@@ -635,8 +636,15 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 String userID = table.getValueAt(row, 0).toString();
                 
                 try {
+                    Appointment [] appointments = dh.getAppointmentByUserID(userID);
                     String[] feedbackIDs = dh.getFeedbackIDsByUserID(userID);
                     String[] appointmentIDs = dh.getAppointmentIDsByUserID(userID);
+                    
+                    if(dh.hasAssignedAppointment(appointments)) {
+                        JOptionPane.showMessageDialog(null, "Cannot delete user. User has assigned appointments!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    
                     fh3.deleteRecords(feedbackIDs);
                     fh2.deleteRecords(appointmentIDs);
                     fh.deleteRecord(userID);
@@ -695,7 +703,12 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 String password = table.getValueAt(row, 2).toString();
                 String role = table.getValueAt(row, 3).toString();
                 
-                String newRecord = userID + "|" + username + "|" + password + "|" + role;
+                User user = dh.getUserByID(userID);
+                
+                user.setUsername(username);
+                user.setPassword(password);
+                
+                String newRecord = user.toString();
                 
                 try {
                     fh.updateRecord(userID, newRecord);
