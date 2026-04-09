@@ -8,6 +8,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -33,6 +34,11 @@ public class ManagerScreen extends javax.swing.JFrame {
     public ManagerScreen() throws IOException {
         initComponents();
         
+        JSpinner.NumberEditor editor = new JSpinner.NumberEditor(sNormalServicePrice, "0.00");
+        JSpinner.NumberEditor editor2 = new JSpinner.NumberEditor(sMajorServicePrice, "0.00");
+        sNormalServicePrice.setEditor(editor);
+        sMajorServicePrice.setEditor(editor2);
+        
         tUsers.getColumnModel().getColumn(4)
             .setCellRenderer(new ButtonRenderer());
         tUsers.getColumnModel().getColumn(4)
@@ -42,6 +48,11 @@ public class ManagerScreen extends javax.swing.JFrame {
             .setCellRenderer(new ButtonRenderer());
         tUsers.getColumnModel().getColumn(5)
             .setCellEditor(new UserDeleteButtonEditor(new JCheckBox(), tUsers));
+        
+        tFeedbacks.getColumnModel().getColumn(4)
+            .setCellRenderer(new ButtonRenderer());
+        tFeedbacks.getColumnModel().getColumn(4)
+            .setCellEditor(new FeedbackSelectButtonEditor(new JCheckBox(), tFeedbacks));
         
         onStart();
     }
@@ -73,7 +84,22 @@ public class ManagerScreen extends javax.swing.JFrame {
         bCreateUser = new javax.swing.JButton();
         bFilter = new javax.swing.JButton();
         pSetServicePrice = new javax.swing.JPanel();
+        sNormalServicePrice = new javax.swing.JSpinner();
+        sMajorServicePrice = new javax.swing.JSpinner();
+        lNormalServicePrice = new javax.swing.JLabel();
+        lMajorServicePrice = new javax.swing.JLabel();
+        bSetPrice = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tPrices = new javax.swing.JTable();
         pViewFeedbacksAndComments = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tFeedbacks = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        taCustomerFeedback = new javax.swing.JTextArea();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        taTechnicianFeedback = new javax.swing.JTextArea();
+        lCustomerFeedback = new javax.swing.JLabel();
+        lTechnicianFeedback = new javax.swing.JLabel();
         pViewReport = new javax.swing.JPanel();
         lBackground = new javax.swing.JLabel();
 
@@ -161,29 +187,118 @@ public class ManagerScreen extends javax.swing.JFrame {
 
         tpTabs.addTab("Manage Users", pManageUsers);
 
-        javax.swing.GroupLayout pSetServicePriceLayout = new javax.swing.GroupLayout(pSetServicePrice);
-        pSetServicePrice.setLayout(pSetServicePriceLayout);
-        pSetServicePriceLayout.setHorizontalGroup(
-            pSetServicePriceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 740, Short.MAX_VALUE)
-        );
-        pSetServicePriceLayout.setVerticalGroup(
-            pSetServicePriceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
-        );
+        pSetServicePrice.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        sNormalServicePrice.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 10000.0d, 0.5d));
+        sNormalServicePrice.setDoubleBuffered(true);
+        pSetServicePrice.add(sNormalServicePrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, 190, 50));
+
+        sMajorServicePrice.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 10000.0d, 0.5d));
+        pSetServicePrice.add(sMajorServicePrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 150, 190, 50));
+
+        lNormalServicePrice.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lNormalServicePrice.setText("NORMAL SERVICE PRICE");
+        pSetServicePrice.add(lNormalServicePrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 120, 170, 30));
+
+        lMajorServicePrice.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lMajorServicePrice.setText("MAJOR SERVICE PRICE");
+        pSetServicePrice.add(lMajorServicePrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 120, 180, 30));
+
+        bSetPrice.setBackground(new java.awt.Color(255, 204, 255));
+        bSetPrice.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        bSetPrice.setText("SET PRICE");
+        bSetPrice.addActionListener(this::bSetPriceActionPerformed);
+        pSetServicePrice.add(bSetPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 150, 150, 50));
+
+        tPrices.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null}
+            },
+            new String [] {
+                "Normal Service Price", "Major Service Price"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane5.setViewportView(tPrices);
+        if (tPrices.getColumnModel().getColumnCount() > 0) {
+            tPrices.getColumnModel().getColumn(0).setResizable(false);
+            tPrices.getColumnModel().getColumn(1).setResizable(false);
+        }
+
+        pSetServicePrice.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 290, 580, 50));
 
         tpTabs.addTab("Set Service Price", pSetServicePrice);
 
-        javax.swing.GroupLayout pViewFeedbacksAndCommentsLayout = new javax.swing.GroupLayout(pViewFeedbacksAndComments);
-        pViewFeedbacksAndComments.setLayout(pViewFeedbacksAndCommentsLayout);
-        pViewFeedbacksAndCommentsLayout.setHorizontalGroup(
-            pViewFeedbacksAndCommentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 740, Short.MAX_VALUE)
-        );
-        pViewFeedbacksAndCommentsLayout.setVerticalGroup(
-            pViewFeedbacksAndCommentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
-        );
+        pViewFeedbacksAndComments.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tFeedbacks.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Feedback ID", "Appointment ID", "Customer Name", "Technician Name", "Action"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tFeedbacks);
+        if (tFeedbacks.getColumnModel().getColumnCount() > 0) {
+            tFeedbacks.getColumnModel().getColumn(0).setResizable(false);
+            tFeedbacks.getColumnModel().getColumn(1).setResizable(false);
+            tFeedbacks.getColumnModel().getColumn(2).setResizable(false);
+            tFeedbacks.getColumnModel().getColumn(3).setResizable(false);
+            tFeedbacks.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        pViewFeedbacksAndComments.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, 610, 220));
+
+        taCustomerFeedback.setEditable(false);
+        taCustomerFeedback.setColumns(20);
+        taCustomerFeedback.setRows(5);
+        taCustomerFeedback.setAutoscrolls(false);
+        taCustomerFeedback.setEnabled(false);
+        taCustomerFeedback.setFocusable(false);
+        taCustomerFeedback.setRequestFocusEnabled(false);
+        taCustomerFeedback.setVerifyInputWhenFocusTarget(false);
+        jScrollPane3.setViewportView(taCustomerFeedback);
+
+        pViewFeedbacksAndComments.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 310, -1, -1));
+
+        taTechnicianFeedback.setEditable(false);
+        taTechnicianFeedback.setColumns(20);
+        taTechnicianFeedback.setRows(5);
+        taTechnicianFeedback.setEnabled(false);
+        taTechnicianFeedback.setFocusable(false);
+        taTechnicianFeedback.setOpaque(false);
+        taTechnicianFeedback.setRequestFocusEnabled(false);
+        taTechnicianFeedback.setVerifyInputWhenFocusTarget(false);
+        jScrollPane4.setViewportView(taTechnicianFeedback);
+
+        pViewFeedbacksAndComments.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 310, -1, -1));
+
+        lCustomerFeedback.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lCustomerFeedback.setText("CUSTOMER COMMENT");
+        pViewFeedbacksAndComments.add(lCustomerFeedback, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 280, 150, 30));
+
+        lTechnicianFeedback.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lTechnicianFeedback.setText("TECHNICIAN FEEDBACK");
+        pViewFeedbacksAndComments.add(lTechnicianFeedback, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 280, 180, 30));
 
         tpTabs.addTab("View Feedbacks & Comments", pViewFeedbacksAndComments);
 
@@ -256,6 +371,27 @@ public class ManagerScreen extends javax.swing.JFrame {
         tfNewUserID.setText("");
         
     }//GEN-LAST:event_bCreateUserActionPerformed
+
+    private void bSetPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSetPriceActionPerformed
+        double normalServicePrice = (double) sNormalServicePrice.getValue();
+        double majorServicePrice = (double) sMajorServicePrice.getValue();
+        
+        String normalServicePriceString = String.format("%.2f", normalServicePrice);
+        String majorServicePriceString = String.format("%.2f", majorServicePrice);
+
+        String priceRecord = normalServicePriceString + "|" + majorServicePriceString;
+        
+        FileHandler fh = new FileHandler("servicePrice.txt");
+        
+        try {
+            fh.writePriceRecord(priceRecord);
+            loadPriceTable();
+            JOptionPane.showMessageDialog(null, "Price Successfully Set!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            System.getLogger(ManagerScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
+    }//GEN-LAST:event_bSetPriceActionPerformed
     
     private User loadCurrentUser() throws FileNotFoundException, IOException {
         String currentUserID = null;
@@ -291,6 +427,53 @@ public class ManagerScreen extends javax.swing.JFrame {
         }
     }
     
+    private void loadFeedbackTable() {
+        
+        Appointment [] appointments = dh.getAppointmentByStatus("CLOSED");
+        
+        String[] ids = new String[appointments.length];
+        int count = 0;
+
+        for (Appointment a : appointments) {
+            if (a != null) {
+                ids[count++] = a.getAppointmentID();
+            }
+        }
+
+        ids = java.util.Arrays.copyOf(ids, count);
+        
+        Feedback [] feedbacks = dh.getFeedbacksByAppointmentID(ids);
+        
+        DefaultTableModel model = (DefaultTableModel) tFeedbacks.getModel();
+        model.setRowCount(0);
+        
+        for (Feedback f : feedbacks) {
+            model.addRow(new Object[]{
+                f.getFeedbackID(),
+                f.getAppointment().getAppointmentID(),
+                (f.getCustomer() == null) ? "DELETED USER" : f.getCustomer().getUsername(),
+                (f.getTechnician() ==  null) ? "DELETED TECHNICIAN" : f.getTechnician().getUsername(),
+                "Select"
+            });
+        }
+    }
+    
+    private void loadPriceTable() throws FileNotFoundException, IOException {
+        
+        DefaultTableModel model = (DefaultTableModel) tPrices.getModel();
+        model.setRowCount(0);
+        
+        try(BufferedReader br = new BufferedReader(new FileReader("servicePrice.txt"))) {
+            
+            String line;
+            
+            while((line = br.readLine()) != null) {
+                String [] records = line.split("\\|");
+                
+                model.addRow(new Object[]{records[0], records[1]});
+            }
+        }
+    }
     private void onStart() throws FileNotFoundException, IOException{
         
         dh.loadUsers();
@@ -303,6 +486,8 @@ public class ManagerScreen extends javax.swing.JFrame {
         
         lUser.setText(username);
         loadUserTable("MANAGER", "COUNTERSTAFF", "TECHNICIAN");
+        loadFeedbackTable();
+        loadPriceTable();
 
     }
     /**
@@ -387,9 +572,10 @@ public class ManagerScreen extends javax.swing.JFrame {
                     fh.updateRecord(userID, newRecord);
                     JOptionPane.showMessageDialog(null, "User successfully updated", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                     dh.loadUsers();
+                    dh.loadAppointments();
                     dh.loadFeedback();
                     loadUserTable(role);
-                    //loadFeedbackTable();
+                    loadFeedbackTable();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -447,6 +633,9 @@ public class ManagerScreen extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "User successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                   
                     dh.loadUsers();
+                    dh.loadAppointments();
+                    dh.loadFeedback();
+                    loadFeedbackTable();
                     
                     
                 } catch (Exception ex) {
@@ -467,25 +656,83 @@ public class ManagerScreen extends javax.swing.JFrame {
             return "Delete";
         }
     }
+    
+    class FeedbackSelectButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private Feedback feedback;
+        
+        public FeedbackSelectButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            
+            button = new JButton("Select");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String feedbackID = table.getValueAt(row, 0).toString(); 
+                
+                feedback = dh.getFeedbackByID(feedbackID);
+                
+                taCustomerFeedback.setText(feedback.getCustomerFeedback());
+                taTechnicianFeedback.setText(feedback.getTechnicianFeedback());
+                
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Select";
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCreateUser;
     private javax.swing.JButton bExit;
     private javax.swing.JButton bFilter;
+    private javax.swing.JButton bSetPrice;
     private javax.swing.JComboBox<String> cbFilterTable;
     private javax.swing.JComboBox<String> cbNewUserRole;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel lBackground;
+    private javax.swing.JLabel lCustomerFeedback;
+    private javax.swing.JLabel lMajorServicePrice;
     private javax.swing.JLabel lNewUserID;
     private javax.swing.JLabel lNewUserPassword;
     private javax.swing.JLabel lNewUserRole;
     private javax.swing.JLabel lNewUserUsername;
+    private javax.swing.JLabel lNormalServicePrice;
+    private javax.swing.JLabel lTechnicianFeedback;
     private javax.swing.JLabel lUser;
     private javax.swing.JPanel pManageUsers;
     private javax.swing.JPanel pSetServicePrice;
     private javax.swing.JPanel pViewFeedbacksAndComments;
     private javax.swing.JPanel pViewReport;
+    private javax.swing.JSpinner sMajorServicePrice;
+    private javax.swing.JSpinner sNormalServicePrice;
+    private javax.swing.JTable tFeedbacks;
+    private javax.swing.JTable tPrices;
     private javax.swing.JTable tUsers;
+    private javax.swing.JTextArea taCustomerFeedback;
+    private javax.swing.JTextArea taTechnicianFeedback;
     private javax.swing.JTextField tfNewUserID;
     private javax.swing.JPasswordField tfNewUserPassword;
     private javax.swing.JTextField tfNewUserUsername;

@@ -323,6 +323,28 @@ public class DataHandler {
         return null;
     }
     
+    public Feedback[] getFeedbacksByAppointmentID(String... IDs) {
+    
+    Feedback[] result = new Feedback[feedbackCount];
+    int count = 0;
+
+    for (int i = 0; i < feedbackCount; i++) {
+
+        if (feedbacks[i] == null) continue;
+
+        String apptID = feedbacks[i].getAppointment().getAppointmentID();
+
+        for (String id : IDs) {
+            if (apptID.equalsIgnoreCase(id)) {
+                result[count++] = feedbacks[i];
+                break;
+            }
+        }
+    }
+
+    return java.util.Arrays.copyOf(result, count);
+}
+    
     public Feedback [] getFeedbackByUserID(String ID) {
         
         Feedback [] result = new Feedback[maxCount];

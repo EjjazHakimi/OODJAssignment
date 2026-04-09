@@ -55,6 +55,12 @@ public class FileHandler {
         }
     }
     
+    public void writePriceRecord(String record) throws FileNotFoundException, IOException {
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filename, false))) {
+            bw.write(record);
+        }
+    }
+    
     public void deleteRecord(String recordID) throws FileNotFoundException, IOException {
         File inputFile = new File(filename);
         File tempFile = new File("temp.txt");
