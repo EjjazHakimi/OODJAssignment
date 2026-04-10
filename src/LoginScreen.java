@@ -134,7 +134,9 @@ public class LoginScreen extends javax.swing.JFrame {
                         dispose();
                         break;
                     case "MANAGER":
-                        //to manager screen
+                        ManagerScreen ms = new ManagerScreen();
+                        ms.show();
+                        dispose();
                         break;
                 }
                 
