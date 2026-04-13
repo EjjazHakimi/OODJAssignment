@@ -487,7 +487,7 @@ public class CustomerScreen extends javax.swing.JFrame {
         FileHandler fh2 = new FileHandler("appointment.txt");
         
         Double price = Double.parseDouble(tfPayAppointmentPrice.getText());
-        String paymentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        String paymentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String appointmentID = tfPayAppointmentID.getText();
         
        if(appointmentID.isEmpty()) {
