@@ -1,9 +1,11 @@
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -12,6 +14,11 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -33,6 +40,7 @@ public class ManagerScreen extends javax.swing.JFrame {
      */
     public ManagerScreen() throws IOException {
         initComponents();
+        pViewReport.setLayout(new BoxLayout(pViewReport, BoxLayout.Y_AXIS));
         
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor(sNormalServicePrice, "0.00");
         JSpinner.NumberEditor editor2 = new JSpinner.NumberEditor(sMajorServicePrice, "0.00");
@@ -100,7 +108,10 @@ public class ManagerScreen extends javax.swing.JFrame {
         taTechnicianFeedback = new javax.swing.JTextArea();
         lCustomerFeedback = new javax.swing.JLabel();
         lTechnicianFeedback = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
         pViewReport = new javax.swing.JPanel();
+        pAppointmentCountBarChart = new javax.swing.JPanel();
+        pPaymentStatusPieChart = new javax.swing.JPanel();
         lBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -302,18 +313,45 @@ public class ManagerScreen extends javax.swing.JFrame {
 
         tpTabs.addTab("View Feedbacks & Comments", pViewFeedbacksAndComments);
 
-        javax.swing.GroupLayout pViewReportLayout = new javax.swing.GroupLayout(pViewReport);
-        pViewReport.setLayout(pViewReportLayout);
-        pViewReportLayout.setHorizontalGroup(
-            pViewReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 740, Short.MAX_VALUE)
+        jScrollPane6.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        pViewReport.setLayout(new javax.swing.BoxLayout(pViewReport, javax.swing.BoxLayout.LINE_AXIS));
+
+        pAppointmentCountBarChart.setMaximumSize(new java.awt.Dimension(500, 400));
+        pAppointmentCountBarChart.setPreferredSize(new java.awt.Dimension(500, 400));
+
+        javax.swing.GroupLayout pAppointmentCountBarChartLayout = new javax.swing.GroupLayout(pAppointmentCountBarChart);
+        pAppointmentCountBarChart.setLayout(pAppointmentCountBarChartLayout);
+        pAppointmentCountBarChartLayout.setHorizontalGroup(
+            pAppointmentCountBarChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
         );
-        pViewReportLayout.setVerticalGroup(
-            pViewReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
+        pAppointmentCountBarChartLayout.setVerticalGroup(
+            pAppointmentCountBarChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
         );
 
-        tpTabs.addTab("View Report", pViewReport);
+        pViewReport.add(pAppointmentCountBarChart);
+
+        pPaymentStatusPieChart.setMaximumSize(new java.awt.Dimension(500, 400));
+        pPaymentStatusPieChart.setPreferredSize(new java.awt.Dimension(500, 400));
+
+        javax.swing.GroupLayout pPaymentStatusPieChartLayout = new javax.swing.GroupLayout(pPaymentStatusPieChart);
+        pPaymentStatusPieChart.setLayout(pPaymentStatusPieChartLayout);
+        pPaymentStatusPieChartLayout.setHorizontalGroup(
+            pPaymentStatusPieChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
+        );
+        pPaymentStatusPieChartLayout.setVerticalGroup(
+            pPaymentStatusPieChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
+        );
+
+        pViewReport.add(pPaymentStatusPieChart);
+
+        jScrollPane6.setViewportView(pViewReport);
+
+        tpTabs.addTab("View Report", jScrollPane6);
 
         getContentPane().add(tpTabs, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 230, 740, 500));
 
@@ -474,6 +512,55 @@ public class ManagerScreen extends javax.swing.JFrame {
             }
         }
     }
+    
+    private void loadAppointmentChart() {
+        try {
+            DefaultCategoryDataset dataset = dh.createMonthlyDataset();
+
+            JFreeChart chart = ChartFactory.createBarChart(
+                "Appointments per Month",
+                "Month",
+                "Number of Appointments",
+                dataset
+            );
+
+            ChartPanel chartPanel = new ChartPanel(chart);
+
+            pAppointmentCountBarChart.removeAll();
+            pAppointmentCountBarChart.setLayout(new BorderLayout());
+            pAppointmentCountBarChart.add(chartPanel, BorderLayout.CENTER);
+            pAppointmentCountBarChart.revalidate();
+            pAppointmentCountBarChart.repaint();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void loadPieChart() {
+        try {
+            DefaultPieDataset dataset = dh.createPaymentDataset();
+
+            JFreeChart chart = ChartFactory.createPieChart(
+                "Payment Status Distribution",
+                dataset,
+                true,
+                true,
+                false
+            );
+
+            ChartPanel chartPanel = new ChartPanel(chart);
+
+            pPaymentStatusPieChart.removeAll();
+            pPaymentStatusPieChart.setLayout(new BorderLayout());
+            pPaymentStatusPieChart.add(chartPanel, BorderLayout.CENTER);
+            pPaymentStatusPieChart.revalidate();
+            pPaymentStatusPieChart.repaint();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void onStart() throws FileNotFoundException, IOException{
         
         dh.loadUsers();
@@ -488,7 +575,8 @@ public class ManagerScreen extends javax.swing.JFrame {
         loadUserTable("MANAGER", "COUNTERSTAFF", "TECHNICIAN");
         loadFeedbackTable();
         loadPriceTable();
-
+        loadAppointmentChart();
+        loadPieChart();
     }
     /**
      * @param args the command line arguments
@@ -712,6 +800,7 @@ public class ManagerScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JLabel lBackground;
     private javax.swing.JLabel lCustomerFeedback;
     private javax.swing.JLabel lMajorServicePrice;
@@ -722,7 +811,9 @@ public class ManagerScreen extends javax.swing.JFrame {
     private javax.swing.JLabel lNormalServicePrice;
     private javax.swing.JLabel lTechnicianFeedback;
     private javax.swing.JLabel lUser;
+    private javax.swing.JPanel pAppointmentCountBarChart;
     private javax.swing.JPanel pManageUsers;
+    private javax.swing.JPanel pPaymentStatusPieChart;
     private javax.swing.JPanel pSetServicePrice;
     private javax.swing.JPanel pViewFeedbacksAndComments;
     private javax.swing.JPanel pViewReport;

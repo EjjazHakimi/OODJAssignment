@@ -3,9 +3,12 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -459,7 +462,7 @@ public class DataHandler {
         return IDs;
         
     }
-   
+    
     public String [] getFeedbackIDsByUserID(String ID) {
         
         Feedback [] f = getFeedbackByUserID(ID);
@@ -532,4 +535,80 @@ public class DataHandler {
         }
         return price;
     }
+    
+    public int[] getAppointmentsPerMonth() throws IOException {
+
+        int[] monthCount = new int[12];
+
+        try (BufferedReader br = new BufferedReader(new FileReader("appointment.txt"))) {
+            String line;
+            
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split("\\|");
+                String dateString = data[3];
+                
+                LocalDate date = LocalDate.parse(dateString);
+                
+                int monthIndex = date.getMonthValue() - 1;
+                monthCount[monthIndex]++;
+            }
+        }
+        return monthCount;
+    }
+
+    public int[] getPaymentCounts() throws IOException {
+        int paid = 0;
+        int unpaid = 0;
+        int pending = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader("appointment.txt"))) {
+            String line;
+        
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split("\\|");
+                String status = data[7];
+
+                if (status.equalsIgnoreCase("PAID")) {
+                    paid++;
+                } else if (status.equalsIgnoreCase("UNPAID")) {
+                    unpaid++;
+                } else if (status.equalsIgnoreCase("PENDING")) {
+                    pending++;
+                }
+            }
+        }
+        return new int[]{paid, unpaid, pending};
+    }
+
+    public DefaultCategoryDataset createMonthlyDataset() throws IOException {
+
+        int[] data = getAppointmentsPerMonth();
+
+        String[] months = {
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        };
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (int i = 0; i < data.length; i++) {
+            dataset.setValue(data[i], "Appointments", months[i]);
+        }
+
+        return dataset;
+    }
+    
+    public DefaultPieDataset createPaymentDataset() throws IOException {
+
+        int[] counts = getPaymentCounts();
+
+        DefaultPieDataset dataset = new DefaultPieDataset();
+
+        dataset.setValue("PAID", counts[0]);
+        dataset.setValue("UNPAID", counts[1]);
+        dataset.setValue("PENDING", counts[2]);
+
+        return dataset;
+    }
+   
 }
