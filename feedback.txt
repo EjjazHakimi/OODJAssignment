@@ -1,1 +1,2 @@
 FB000000|Microphone Echoing|Wiring issues|AP000000|TP073318|TP015611
+FB000001|Lighting Issues|Wiring Issues|AP000001|TP073318|TP045532

@@ -590,6 +590,8 @@ public class CustomerScreen extends javax.swing.JFrame {
 
             if (!a.getCustomer().getUserID().equalsIgnoreCase(customerID)) continue;
             
+            if (!"CLOSED".equalsIgnoreCase(a.getAppointmentStatus())) continue;
+            
             model.addRow(new Object[] {
                 a.getAppointmentID(),
                 a.getAppointmentDate(),
