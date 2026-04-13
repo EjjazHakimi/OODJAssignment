@@ -1,5 +1,6 @@
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalTime;
@@ -241,6 +242,21 @@ public class DataHandler {
         return java.util.Arrays.copyOf(result, count);
     }
     
+    public Appointment [] getAppointmentByPaymentStatus(String status) {
+        
+        Appointment [] result = new Appointment[maxCount];
+        int count = 0;
+        
+        for(int i = 0; i < appointmentCount; i++) {
+                 
+            if(appointments[i] != null && appointments[i].getAppointmentPaymentStatus().trim().equalsIgnoreCase(status)) {
+                result[count++] = appointments[i];
+            }
+        }
+        
+        return java.util.Arrays.copyOf(result, count);
+    }
+    
     public Payment [] loadPayments() throws IOException {
         
         paymentCount = 0;
@@ -276,6 +292,21 @@ public class DataHandler {
             }
         }
         return null;
+    }
+    
+    public Payment [] getPaymentByStatus(String status) {
+        
+        Payment [] result = new Payment[maxCount];
+        int count = 0;
+        
+        for(int i = 0; i < paymentCount; i++) {
+                 
+            if(payments[i] != null && payments[i].getPaymentStatus().trim().equalsIgnoreCase(status)) {
+                result[count++] = payments[i];
+            }
+        }
+        
+        return java.util.Arrays.copyOf(result, count);
     }
     
     public Feedback [] loadFeedback() throws IOException {
@@ -475,11 +506,30 @@ public class DataHandler {
     }
     
     public boolean hasAssignedAppointment(Appointment[] appointments) {
-    for (Appointment appointment : appointments) {
-        if (appointment != null && appointment.getAppointmentStatus().equalsIgnoreCase("ASSIGNED")) {
-            return true;
-        }
+        for (Appointment appointment : appointments) {
+            if (appointment != null && appointment.getAppointmentStatus().equalsIgnoreCase("ASSIGNED")) {
+                return true;
+            }
+        }   
+        return false;
     }
-    return false;
-}
+    
+    public String ObtainPrice(String appointmentType) throws FileNotFoundException, IOException {
+        
+        String price = "";
+        
+        try(BufferedReader br = new BufferedReader(new FileReader("servicePrice.txt"))) {
+            String line;
+            
+            if((line = br.readLine()) != null) {
+                String [] record = line.split("\\|");
+                
+                String normalServicePrice = record[0].trim();
+                String majorServicePrice = record[1].trim();
+                
+                price =  appointmentType.equals("NORMAL") ? normalServicePrice : majorServicePrice;
+            }   
+        }
+        return price;
+    }
 }

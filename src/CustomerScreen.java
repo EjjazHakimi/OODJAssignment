@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -45,6 +46,11 @@ public class CustomerScreen extends javax.swing.JFrame {
         tAppointments.getColumnModel().getColumn(4)
             .setCellEditor(new AppointmentDeleteButtonEditor(new JCheckBox(), tAppointments));
         
+        tPayments.getColumnModel().getColumn(4)
+            .setCellRenderer(new ButtonRenderer());
+        tPayments.getColumnModel().getColumn(4)
+            .setCellEditor(new PayAppointmentSelectButtonEditor(new JCheckBox(), tPayments));
+        
         onStart();
     }
 
@@ -74,6 +80,17 @@ public class CustomerScreen extends javax.swing.JFrame {
         lComments = new javax.swing.JLabel();
         bRequestAppointment = new javax.swing.JButton();
         pMakePayment = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tPayments = new javax.swing.JTable();
+        tfPayAppointmentID = new javax.swing.JTextField();
+        tfPayAppointmentStartTime = new javax.swing.JTextField();
+        tfPayAppointmentEndTime = new javax.swing.JTextField();
+        tfPayAppointmentPrice = new javax.swing.JTextField();
+        lPayAppointmentID = new javax.swing.JLabel();
+        lPayAppointmentStartTime = new javax.swing.JLabel();
+        lPayAppointmentEndTime = new javax.swing.JLabel();
+        lPayAppointmentPrice = new javax.swing.JLabel();
+        bPay = new javax.swing.JButton();
         pViewFeedback = new javax.swing.JPanel();
         pHistory = new javax.swing.JPanel();
         pProfile = new javax.swing.JPanel();
@@ -169,16 +186,87 @@ public class CustomerScreen extends javax.swing.JFrame {
 
         tpTabs.addTab("Make Appointment", pMakeAppointment);
 
-        javax.swing.GroupLayout pMakePaymentLayout = new javax.swing.GroupLayout(pMakePayment);
-        pMakePayment.setLayout(pMakePaymentLayout);
-        pMakePaymentLayout.setHorizontalGroup(
-            pMakePaymentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 740, Short.MAX_VALUE)
-        );
-        pMakePaymentLayout.setVerticalGroup(
-            pMakePaymentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
-        );
+        pMakePayment.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tPayments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Appointment ID", "Date", "Appointment Type", "Location", "Action"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tPayments);
+        if (tPayments.getColumnModel().getColumnCount() > 0) {
+            tPayments.getColumnModel().getColumn(0).setResizable(false);
+            tPayments.getColumnModel().getColumn(1).setResizable(false);
+            tPayments.getColumnModel().getColumn(2).setResizable(false);
+            tPayments.getColumnModel().getColumn(3).setResizable(false);
+            tPayments.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        pMakePayment.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 670, 180));
+
+        tfPayAppointmentID.setEditable(false);
+        tfPayAppointmentID.setEnabled(false);
+        tfPayAppointmentID.setFocusable(false);
+        tfPayAppointmentID.setRequestFocusEnabled(false);
+        tfPayAppointmentID.setVerifyInputWhenFocusTarget(false);
+        pMakePayment.add(tfPayAppointmentID, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, 200, 50));
+
+        tfPayAppointmentStartTime.setEditable(false);
+        tfPayAppointmentStartTime.setEnabled(false);
+        tfPayAppointmentStartTime.setFocusable(false);
+        tfPayAppointmentStartTime.setRequestFocusEnabled(false);
+        tfPayAppointmentStartTime.setVerifyInputWhenFocusTarget(false);
+        pMakePayment.add(tfPayAppointmentStartTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 250, 200, 50));
+
+        tfPayAppointmentEndTime.setEditable(false);
+        tfPayAppointmentEndTime.setEnabled(false);
+        tfPayAppointmentEndTime.setFocusable(false);
+        tfPayAppointmentEndTime.setRequestFocusEnabled(false);
+        tfPayAppointmentEndTime.setVerifyInputWhenFocusTarget(false);
+        pMakePayment.add(tfPayAppointmentEndTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 250, 200, 50));
+
+        tfPayAppointmentPrice.setEditable(false);
+        tfPayAppointmentPrice.setEnabled(false);
+        tfPayAppointmentPrice.setFocusable(false);
+        tfPayAppointmentPrice.setRequestFocusEnabled(false);
+        tfPayAppointmentPrice.setVerifyInputWhenFocusTarget(false);
+        pMakePayment.add(tfPayAppointmentPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 360, 200, 50));
+
+        lPayAppointmentID.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lPayAppointmentID.setText("APPOINTMENT ID");
+        pMakePayment.add(lPayAppointmentID, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 220, 140, 30));
+
+        lPayAppointmentStartTime.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lPayAppointmentStartTime.setText("APPOINTMENT START TIME");
+        pMakePayment.add(lPayAppointmentStartTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 220, 190, 30));
+
+        lPayAppointmentEndTime.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lPayAppointmentEndTime.setText("APPOINTMENT END TIME");
+        pMakePayment.add(lPayAppointmentEndTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 220, 190, 30));
+
+        lPayAppointmentPrice.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lPayAppointmentPrice.setText("PRICE (RM)");
+        pMakePayment.add(lPayAppointmentPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 150, 40));
+
+        bPay.setBackground(new java.awt.Color(255, 153, 51));
+        bPay.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        bPay.setText("PAY");
+        bPay.addActionListener(this::bPayActionPerformed);
+        pMakePayment.add(bPay, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 360, 140, 50));
 
         tpTabs.addTab("Make Payment", pMakePayment);
 
@@ -392,6 +480,58 @@ public class CustomerScreen extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_bRequestAppointmentActionPerformed
+
+    private void bPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPayActionPerformed
+
+        FileHandler fh = new FileHandler("payment.txt");
+        FileHandler fh2 = new FileHandler("appointment.txt");
+        
+        Double price = Double.parseDouble(tfPayAppointmentPrice.getText());
+        String paymentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        String appointmentID = tfPayAppointmentID.getText();
+        
+       if(appointmentID.isEmpty()) {
+           JOptionPane.showMessageDialog(null, "Please select an appointment!", "ERROR", JOptionPane.ERROR_MESSAGE);
+           return;
+       }
+        
+        try {
+            String paymentID = fh.generateNextID("PY");
+            Customer customer = (Customer) loadCurrentUser();
+            Appointment appointment = dh.getAppointmentByID(appointmentID);
+    
+            Payment payment = new Payment(
+                    paymentID,
+                    price,
+                    paymentDate,
+                    "SUBMITTED",
+                    appointment,
+                    customer,
+                    (CounterStaff) null
+                    );
+            
+            appointment.setAppointmentPaymentStatus("PENDING");
+            
+            fh.writeRecord(payment);
+            fh2.updateRecord(tfPayAppointmentID.getText(), appointment.toString());
+            
+            dh.loadAppointments();
+            dh.loadPayments();
+            loadPaymentTable();
+            
+            tfPayAppointmentID.setText("");
+            tfPayAppointmentStartTime.setText("");
+            tfPayAppointmentEndTime.setText("");
+            tfPayAppointmentPrice.setText("");
+            
+            JOptionPane.showMessageDialog(null, "Payment Submitted!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+            
+        } catch (IOException ex) {
+            System.getLogger(CustomerScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+        
+    }//GEN-LAST:event_bPayActionPerformed
     
     private User loadCurrentUser() throws FileNotFoundException, IOException {
         String currentUserID = null;
@@ -434,6 +574,32 @@ public class CustomerScreen extends javax.swing.JFrame {
         }
     }
     
+    private void loadPaymentTable() throws IOException {
+        Appointment [] appointments = dh.getAppointmentByPaymentStatus("UNPAID");
+        
+        DefaultTableModel model = (DefaultTableModel) tPayments.getModel();
+        model.setRowCount(0);
+        
+        String customerID = loadCurrentUser().getUserID();
+        
+        for (Appointment a : appointments) {
+            
+            if (a == null) continue;
+            
+            if (a.getCustomer() == null) continue;
+
+            if (!a.getCustomer().getUserID().equalsIgnoreCase(customerID)) continue;
+            
+            model.addRow(new Object[] {
+                a.getAppointmentID(),
+                a.getAppointmentDate(),
+                a.getAppointmentType(),
+                a.getAppointmentLocation(),
+                "Select"
+            });
+        }
+    }
+    
      private void onStart() throws FileNotFoundException, IOException{
         
         dh.loadUsers();
@@ -454,6 +620,7 @@ public class CustomerScreen extends javax.swing.JFrame {
         tfPassword.setText(password);
         
         loadAppointmentTable();
+        loadPaymentTable();
     }
      
     /**
@@ -552,15 +719,69 @@ public class CustomerScreen extends javax.swing.JFrame {
         }
     }
     
+    class PayAppointmentSelectButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private Appointment appointment;
+        private LocalTime time;
+        
+        public PayAppointmentSelectButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            
+            button = new JButton("Select");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String appointmentID = table.getValueAt(row, 0).toString(); 
+                
+                appointment = dh.getAppointmentByID(appointmentID);
+                
+                try {
+                    tfPayAppointmentID.setText(appointmentID);  
+                    tfPayAppointmentStartTime.setText(appointment.getAppointmentStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    tfPayAppointmentEndTime.setText(appointment.getAppointmentEndTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    tfPayAppointmentPrice.setText(dh.ObtainPrice(appointment.getAppointmentType()));
+                    
+                } catch (IOException ex) {
+                    System.getLogger(CustomerScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                }
+                
+                
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Select";
+        }
+    }
+    
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bExit;
+    private javax.swing.JButton bPay;
     private javax.swing.JButton bRequestAppointment;
     private javax.swing.JButton bUpdateData;
     private javax.swing.JComboBox<String> cbAppointmentStartTime;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private com.toedter.calendar.JDateChooser jdAppointmentDate;
     private javax.swing.JLabel lAppointmentDate;
     private javax.swing.JLabel lAppointmentLocation;
@@ -570,6 +791,10 @@ public class CustomerScreen extends javax.swing.JFrame {
     private javax.swing.JLabel lCurrentPassword;
     private javax.swing.JLabel lID;
     private javax.swing.JLabel lPassword;
+    private javax.swing.JLabel lPayAppointmentEndTime;
+    private javax.swing.JLabel lPayAppointmentID;
+    private javax.swing.JLabel lPayAppointmentPrice;
+    private javax.swing.JLabel lPayAppointmentStartTime;
     private javax.swing.JLabel lRole;
     private javax.swing.JLabel lUser;
     private javax.swing.JLabel lUsername;
@@ -579,12 +804,17 @@ public class CustomerScreen extends javax.swing.JFrame {
     private javax.swing.JPanel pProfile;
     private javax.swing.JPanel pViewFeedback;
     private javax.swing.JTable tAppointments;
+    private javax.swing.JTable tPayments;
     private javax.swing.JTextArea taCustomerFeedback;
     private javax.swing.JTextField tfAppointmentLocation;
     private javax.swing.JTextField tfCurrentID;
     private javax.swing.JPasswordField tfCurrentPassword;
     private javax.swing.JTextField tfCurrentRole;
     private javax.swing.JPasswordField tfPassword;
+    private javax.swing.JTextField tfPayAppointmentEndTime;
+    private javax.swing.JTextField tfPayAppointmentID;
+    private javax.swing.JTextField tfPayAppointmentPrice;
+    private javax.swing.JTextField tfPayAppointmentStartTime;
     private javax.swing.JTextField tfUsername;
     private javax.swing.JTabbedPane tpTabs;
     // End of variables declaration//GEN-END:variables

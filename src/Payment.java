@@ -40,14 +40,31 @@ public class Payment implements FileHandlerInterface {
         return paymentStatus;
     }
     
+    public Appointment getAppointment() {
+        return appointment;
+    }
+    
+    public Customer getCustomer() {
+        return customer;
+    }
+    
+    public CounterStaff getCounterStaff() {
+        return counterStaff;
+    }
+    
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+    
     public void setCounterStaff(CounterStaff paymentCollector) {
         this.counterStaff = paymentCollector;
     }
     
     @Override
     public String toString() {
-        return paymentID + "|" + paymentAmount + "|" +  paymentDate + "|" + paymentStatus + "|" +
-                appointment.getAppointmentID() + "|" + customer.getUserID() + "|" + counterStaff.getUserID();
+        return paymentID + "|" + String.format("%.2f", paymentAmount) + "|" +  paymentDate + "|" + paymentStatus + "|" +
+                appointment.getAppointmentID() + "|" + customer.getUserID() + "|" + 
+                (counterStaff != null ? counterStaff.getUserID() : "null");
     }
     
     @Override 
