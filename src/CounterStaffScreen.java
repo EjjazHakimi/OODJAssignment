@@ -27,6 +27,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CounterStaffScreen.class.getName());
     private DataHandler dh = new DataHandler();
+    private ExportHandler eh = new ExportHandler();
 
     /**
      * Creates new form CounterStaffHomescreen
@@ -342,6 +343,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         bGenerateReceipt.setBackground(new java.awt.Color(102, 102, 255));
         bGenerateReceipt.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         bGenerateReceipt.setText("GENERATE RECEIPT");
+        bGenerateReceipt.addActionListener(this::bGenerateReceiptActionPerformed);
         pCollectPayments.add(bGenerateReceipt, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 360, 150, 60));
 
         tpTabs.addTab("Collect Payments", pCollectPayments);
@@ -591,6 +593,26 @@ public class CounterStaffScreen extends javax.swing.JFrame {
             System.getLogger(CounterStaffScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }      
     }//GEN-LAST:event_bCollectPaymentActionPerformed
+
+    private void bGenerateReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGenerateReceiptActionPerformed
+        try(BufferedReader br = new BufferedReader(new FileReader("myReceipt.txt"))) {
+            
+            String line;
+            if((line = br.readLine()) != null) {
+                String [] record = line.split("\\|");
+                
+                String paymentID = record[0].trim();
+                Payment payment = dh.getPaymentByID(paymentID);
+                
+                eh.generateReceiptPDF(payment);
+                
+                JOptionPane.showMessageDialog(null, "Receipt Successfully Generated!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (IOException ex) {
+            System.getLogger(CounterStaffScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }//GEN-LAST:event_bGenerateReceiptActionPerformed
     
     private User loadCurrentUser() throws FileNotFoundException, IOException {
         String currentUserID = null;
