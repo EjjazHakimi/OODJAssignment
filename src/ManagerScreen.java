@@ -112,6 +112,7 @@ public class ManagerScreen extends javax.swing.JFrame {
         pViewReport = new javax.swing.JPanel();
         pAppointmentCountBarChart = new javax.swing.JPanel();
         pPaymentStatusPieChart = new javax.swing.JPanel();
+        pPaymentRevenueBarChart = new javax.swing.JPanel();
         lBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -349,6 +350,22 @@ public class ManagerScreen extends javax.swing.JFrame {
 
         pViewReport.add(pPaymentStatusPieChart);
 
+        pPaymentRevenueBarChart.setMaximumSize(new java.awt.Dimension(500, 400));
+        pPaymentRevenueBarChart.setPreferredSize(new java.awt.Dimension(500, 400));
+
+        javax.swing.GroupLayout pPaymentRevenueBarChartLayout = new javax.swing.GroupLayout(pPaymentRevenueBarChart);
+        pPaymentRevenueBarChart.setLayout(pPaymentRevenueBarChartLayout);
+        pPaymentRevenueBarChartLayout.setHorizontalGroup(
+            pPaymentRevenueBarChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
+        );
+        pPaymentRevenueBarChartLayout.setVerticalGroup(
+            pPaymentRevenueBarChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
+        );
+
+        pViewReport.add(pPaymentRevenueBarChart);
+
         jScrollPane6.setViewportView(pViewReport);
 
         tpTabs.addTab("View Report", jScrollPane6);
@@ -515,7 +532,7 @@ public class ManagerScreen extends javax.swing.JFrame {
     
     private void loadAppointmentChart() {
         try {
-            DefaultCategoryDataset dataset = dh.createMonthlyDataset();
+            DefaultCategoryDataset dataset = createAppointmentCountDataset();
 
             JFreeChart chart = ChartFactory.createBarChart(
                 "Appointments per Month",
@@ -539,7 +556,7 @@ public class ManagerScreen extends javax.swing.JFrame {
     
     private void loadPieChart() {
         try {
-            DefaultPieDataset dataset = dh.createPaymentDataset();
+            DefaultPieDataset dataset = createPaymentDataset();
 
             JFreeChart chart = ChartFactory.createPieChart(
                 "Payment Status Distribution",
@@ -561,6 +578,31 @@ public class ManagerScreen extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    
+    private void loadRevenueChart() {
+        try {
+            DefaultCategoryDataset dataset = createRevenueDataset();
+
+            JFreeChart chart = ChartFactory.createBarChart(
+                "Monthly Revenue",
+                "Month",
+                "Revenue (RM)",
+                dataset
+            );
+
+            ChartPanel chartPanel = new ChartPanel(chart);
+
+            pPaymentRevenueBarChart.removeAll();
+            pPaymentRevenueBarChart.setLayout(new BorderLayout());
+            pPaymentRevenueBarChart.add(chartPanel, BorderLayout.CENTER);
+            pPaymentRevenueBarChart.revalidate();
+            pPaymentRevenueBarChart.repaint();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     private void onStart() throws FileNotFoundException, IOException{
         
         dh.loadUsers();
@@ -577,6 +619,63 @@ public class ManagerScreen extends javax.swing.JFrame {
         loadPriceTable();
         loadAppointmentChart();
         loadPieChart();
+        loadRevenueChart();
+    }
+    
+    public DefaultCategoryDataset createAppointmentCountDataset() throws IOException {
+        
+        Manager manager = (Manager) loadCurrentUser();
+
+        int[] data = manager.getAppointmentsPerMonth(dh.getAppointments(), dh.getAppointmentCount());
+
+        String[] months = {
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        };
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (int i = 0; i < data.length; i++) {
+            dataset.setValue(data[i], "Appointments", months[i]);
+        }
+
+        return dataset;
+    }
+    
+    public DefaultPieDataset createPaymentDataset() throws IOException {
+        
+        Manager manager = (Manager) loadCurrentUser();
+        
+        int[] counts = manager.getPaymentCounts(dh.getAppointments(), dh.getAppointmentCount());
+        
+
+        DefaultPieDataset dataset = new DefaultPieDataset();
+
+        dataset.setValue("PAID", counts[0]);
+        dataset.setValue("UNPAID", counts[1]);
+        dataset.setValue("PENDING", counts[2]);
+
+        return dataset;
+    }
+    
+    public DefaultCategoryDataset createRevenueDataset() throws IOException {
+
+        Manager manager = (Manager) loadCurrentUser();
+
+        double[] revenue = manager.getMonthlyRevenue(dh.getPayments(), dh.getPaymentCount());
+    
+        String[] months = {
+            "Jan","Feb","Mar","Apr","May","Jun",
+            "Jul","Aug","Sep","Oct","Nov","Dec"
+        };
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (int i = 0; i < revenue.length; i++) {
+            dataset.addValue(revenue[i], "Revenue", months[i]);
+        }
+
+        return dataset;
     }
     /**
      * @param args the command line arguments
@@ -709,10 +808,12 @@ public class ManagerScreen extends javax.swing.JFrame {
                 
                 String userID = table.getValueAt(row, 0).toString();
                 
+                Technician technician = (Technician) dh.getUserByID(userID);
+                
                 try {
                     Appointment [] appointments = dh.getAppointmentByTechnicianID(userID);
                     
-                    if(dh.hasAssignedAppointment(appointments)) {
+                    if(technician.hasAssignedAppointment(appointments, appointments.length)) {
                         JOptionPane.showMessageDialog(null, "Cannot delete Technician. Technician has assigned appointments!", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -813,6 +914,7 @@ public class ManagerScreen extends javax.swing.JFrame {
     private javax.swing.JLabel lUser;
     private javax.swing.JPanel pAppointmentCountBarChart;
     private javax.swing.JPanel pManageUsers;
+    private javax.swing.JPanel pPaymentRevenueBarChart;
     private javax.swing.JPanel pPaymentStatusPieChart;
     private javax.swing.JPanel pSetServicePrice;
     private javax.swing.JPanel pViewFeedbacksAndComments;

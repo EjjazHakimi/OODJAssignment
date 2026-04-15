@@ -10,4 +10,22 @@ public class Customer extends User {
         
         super(userID, username, password, userRole);
     }
+    
+    public boolean hasAssignedAppointment(Appointment[] appointments, int appointmentCount) {
+
+        for (int i = 0; i < appointmentCount; i++) {
+            Appointment a = appointments[i];
+
+            if (a == null) continue;
+
+            if (a.getCustomer() == null) continue;
+
+            if (!a.getCustomer().getUserID().equalsIgnoreCase(this.getUserID())) continue;
+
+            if ("ASSIGNED".equalsIgnoreCase(a.getAppointmentStatus())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

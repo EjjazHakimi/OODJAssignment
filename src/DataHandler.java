@@ -45,7 +45,23 @@ public class DataHandler {
     private String paymentFile = "payment.txt";
     private String feedbackFile = "feedback.txt";
     
-    public DataHandler(){
+    public DataHandler(){ 
+    }
+    
+    public Appointment[] getAppointments() {
+        return appointments;
+    }
+
+    public int getAppointmentCount() {
+        return appointmentCount;
+    }
+    
+    public Payment[] getPayments() {
+        return payments;
+    }
+
+    public int getPaymentCount() {
+        return paymentCount;
     }
     
     public User [] loadUsers() throws IOException {
@@ -220,7 +236,7 @@ public class DataHandler {
         
         for(int i = 0; i < appointmentCount; i++) {
                  
-            if(appointments[i] != null && appointments[i].getCustomer() != null &&
+            if(appointments[i] != null && appointments[i].getTechnician() != null &&
                     appointments[i].getTechnician().getUserID().trim().equalsIgnoreCase(ID)) {
                 
                 result[count++] = appointments[i];
@@ -477,46 +493,6 @@ public class DataHandler {
         
     }
     
-    public boolean isTechnicianAvailable(String technicianID, String date, LocalTime startTime, LocalTime endTime) {
-        
-        for (int i = 0; i < appointmentCount; i++) {
-
-            Appointment a = appointments[i];
-
-            if (a == null) continue;
-            
-            if (a.getTechnician() == null) continue;
-
-            if (!a.getTechnician().getUserID().equalsIgnoreCase(technicianID)) continue;
-
-            if (!a.getAppointmentDate().equals(date)) continue;
-            
-            if (!"ASSIGNED".equalsIgnoreCase(a.getAppointmentStatus())) continue;
-
-            LocalTime existingStart = a.getAppointmentStartTime();
-            LocalTime existingEnd = a.getAppointmentEndTime();
-
-            if (existingEnd == null) continue;
-
-            boolean overlap = startTime.isBefore(existingEnd) && endTime.isAfter(existingStart);
-
-            if (overlap) {
-                return false;
-            }
-            
-        }
-        return true;
-    }
-    
-    public boolean hasAssignedAppointment(Appointment[] appointments) {
-        for (Appointment appointment : appointments) {
-            if (appointment != null && appointment.getAppointmentStatus().equalsIgnoreCase("ASSIGNED")) {
-                return true;
-            }
-        }   
-        return false;
-    }
-    
     public String ObtainPrice(String appointmentType) throws FileNotFoundException, IOException {
         
         String price = "";
@@ -535,80 +511,4 @@ public class DataHandler {
         }
         return price;
     }
-    
-    public int[] getAppointmentsPerMonth() throws IOException {
-
-        int[] monthCount = new int[12];
-
-        try (BufferedReader br = new BufferedReader(new FileReader("appointment.txt"))) {
-            String line;
-            
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split("\\|");
-                String dateString = data[3];
-                
-                LocalDate date = LocalDate.parse(dateString);
-                
-                int monthIndex = date.getMonthValue() - 1;
-                monthCount[monthIndex]++;
-            }
-        }
-        return monthCount;
-    }
-
-    public int[] getPaymentCounts() throws IOException {
-        int paid = 0;
-        int unpaid = 0;
-        int pending = 0;
-
-        try (BufferedReader br = new BufferedReader(new FileReader("appointment.txt"))) {
-            String line;
-        
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split("\\|");
-                String status = data[7];
-
-                if (status.equalsIgnoreCase("PAID")) {
-                    paid++;
-                } else if (status.equalsIgnoreCase("UNPAID")) {
-                    unpaid++;
-                } else if (status.equalsIgnoreCase("PENDING")) {
-                    pending++;
-                }
-            }
-        }
-        return new int[]{paid, unpaid, pending};
-    }
-
-    public DefaultCategoryDataset createMonthlyDataset() throws IOException {
-
-        int[] data = getAppointmentsPerMonth();
-
-        String[] months = {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-        };
-
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-        for (int i = 0; i < data.length; i++) {
-            dataset.setValue(data[i], "Appointments", months[i]);
-        }
-
-        return dataset;
-    }
-    
-    public DefaultPieDataset createPaymentDataset() throws IOException {
-
-        int[] counts = getPaymentCounts();
-
-        DefaultPieDataset dataset = new DefaultPieDataset();
-
-        dataset.setValue("PAID", counts[0]);
-        dataset.setValue("UNPAID", counts[1]);
-        dataset.setValue("PENDING", counts[2]);
-
-        return dataset;
-    }
-   
 }
