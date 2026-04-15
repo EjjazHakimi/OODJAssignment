@@ -45,6 +45,10 @@ public class User implements FileHandlerInterface {
         return this.userID.equals(loginID) && this.username.equals(loginUsername) 
                 && this.password.equals(loginPassword);
     }
+    
+    public boolean canBeDeleted(DataHandler dh) {
+        return true;
+    }
 
     @Override
     public String toString(){

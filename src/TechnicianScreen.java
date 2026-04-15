@@ -408,6 +408,9 @@ public class TechnicianScreen extends javax.swing.JFrame {
                 FileHandler fh2 = new FileHandler("login.txt");
                 fh2.writeLoginUserRecord(user);
                 
+                FileHandler fh3 = new FileHandler("auditLog.txt");
+                AuditLog.log(fh3, fh3.generateNextID("AD"), user.getUserRole(), "UPDATE", user.getUserID(), "UPDATE USER DETAILS");
+                
                 JOptionPane.showMessageDialog(null, "Successfully updated User Profile!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
 
                 tfUsername.setText(newUsername);
@@ -434,10 +437,12 @@ public class TechnicianScreen extends javax.swing.JFrame {
         }
         
         FileHandler fh = new FileHandler("appointment.txt");
+        FileHandler fh2 = new FileHandler("auditLog.txt");
         
         Appointment appointment = dh.getAppointmentByID(appointmentID);
         
         try {
+            Technician technician = (Technician) loadCurrentUser();
             appointment.setAppointmentStatus("COMPLETED");
             fh.updateRecord(appointmentID, appointment.toString());
             
@@ -447,6 +452,8 @@ public class TechnicianScreen extends javax.swing.JFrame {
             tfAppointmentStartTime.setText("");
             tfAppointmentEndTime.setText("");
             taCustomerFeedback.setText("");
+            
+            AuditLog.log(fh2, fh2.generateNextID("AD"), technician.getUserRole(), "COMPLETE", appointmentID, "COMPLETE ASSIGNMENT");
                 
             JOptionPane.showMessageDialog(null, "Appointment Completed", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
             
@@ -491,6 +498,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
         
         FileHandler fh = new FileHandler("appointment.txt");
         FileHandler fh2 = new FileHandler("feedback.txt");
+        FileHandler fh3 = new FileHandler("auditLog.txt");
         
         if (appointmentID.isBlank()) {
             JOptionPane.showMessageDialog(null, "Select Appointment First!", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -513,6 +521,8 @@ public class TechnicianScreen extends javax.swing.JFrame {
             
             fh.updateRecord(appointmentID, appointment.toString());
             fh2.updateRecord(feedback.getFeedbackID(), feedback.toString());
+            
+            AuditLog.log(fh3, fh3.generateNextID("AD"), technician.getUserRole(), "CREATE", feedback.getFeedbackID(), "CREATE TECHNICIAN FEEDBACK");
             
             dh.loadUsers();
             dh.loadAppointments();

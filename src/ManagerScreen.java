@@ -62,6 +62,11 @@ public class ManagerScreen extends javax.swing.JFrame {
         tFeedbacks.getColumnModel().getColumn(4)
             .setCellEditor(new FeedbackSelectButtonEditor(new JCheckBox(), tFeedbacks));
         
+        tAuditLogs.getColumnModel().getColumn(5)
+            .setCellRenderer(new ButtonRenderer());
+        tAuditLogs.getColumnModel().getColumn(5)
+            .setCellEditor(new AuditLogSelectButtonEditor(new JCheckBox(), tAuditLogs));
+        
         onStart();
     }
 
@@ -113,6 +118,12 @@ public class ManagerScreen extends javax.swing.JFrame {
         pAppointmentCountBarChart = new javax.swing.JPanel();
         pPaymentStatusPieChart = new javax.swing.JPanel();
         pPaymentRevenueBarChart = new javax.swing.JPanel();
+        pViewAuditLogs = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tAuditLogs = new javax.swing.JTable();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        taAuditLogDetails = new javax.swing.JTextArea();
+        lAuditLogDetails = new javax.swing.JLabel();
         lBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -370,6 +381,57 @@ public class ManagerScreen extends javax.swing.JFrame {
 
         tpTabs.addTab("View Report", jScrollPane6);
 
+        pViewAuditLogs.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tAuditLogs.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Audit ID", "Timestamp", "User Role", "User Action", "Target ID", "Action"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane7.setViewportView(tAuditLogs);
+        if (tAuditLogs.getColumnModel().getColumnCount() > 0) {
+            tAuditLogs.getColumnModel().getColumn(0).setResizable(false);
+            tAuditLogs.getColumnModel().getColumn(1).setResizable(false);
+            tAuditLogs.getColumnModel().getColumn(2).setResizable(false);
+            tAuditLogs.getColumnModel().getColumn(3).setResizable(false);
+            tAuditLogs.getColumnModel().getColumn(4).setResizable(false);
+            tAuditLogs.getColumnModel().getColumn(5).setResizable(false);
+        }
+
+        pViewAuditLogs.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 30, 630, 250));
+
+        taAuditLogDetails.setEditable(false);
+        taAuditLogDetails.setColumns(20);
+        taAuditLogDetails.setRows(5);
+        taAuditLogDetails.setEnabled(false);
+        taAuditLogDetails.setFocusable(false);
+        taAuditLogDetails.setOpaque(false);
+        taAuditLogDetails.setRequestFocusEnabled(false);
+        taAuditLogDetails.setVerifyInputWhenFocusTarget(false);
+        jScrollPane8.setViewportView(taAuditLogDetails);
+
+        pViewAuditLogs.add(jScrollPane8, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 320, 450, 110));
+
+        lAuditLogDetails.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lAuditLogDetails.setText("AUDIT LOG DETAILS");
+        pViewAuditLogs.add(lAuditLogDetails, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 290, 170, 30));
+
+        tpTabs.addTab("View Audit Logs", pViewAuditLogs);
+
         getContentPane().add(tpTabs, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 230, 740, 500));
 
         lBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/OODJ Manager Screen.png"))); // NOI18N
@@ -403,16 +465,21 @@ public class ManagerScreen extends javax.swing.JFrame {
         String newRole = cbNewUserRole.getSelectedItem().toString().trim().replace(" ", "");
         
         FileHandler fh = new FileHandler("user.txt");
+        FileHandler fh2 = new FileHandler("auditLog.txt");
         
         User u;
         
         try {
+            Manager manager = (Manager) loadCurrentUser();
             u = dh.RegisterUser(newID, newUsername, newPassword, newRole);
             if(!fh.doesRecordExists(u)) {
                 fh.writeRecord(u);
                 dh.loadUsers();
+                
+                AuditLog.log(fh2, fh2.generateNextID("AD"), manager.getUserRole(), "CREATE", newID, "CREATE USER");
                 JOptionPane.showMessageDialog(null, "User successfully created", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
-                loadUserTable(newRole);   
+                loadUserTable(newRole);
+                loadAuditLogTable();
             } else {
                 JOptionPane.showMessageDialog(null, "User already exists!", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
@@ -530,6 +597,28 @@ public class ManagerScreen extends javax.swing.JFrame {
         }
     }
     
+    private void loadAuditLogTable() throws IOException {
+        
+        AuditLog [] auditLogs = dh.loadAuditLog();
+        
+        DefaultTableModel model = (DefaultTableModel) tAuditLogs.getModel();
+        model.setRowCount(0);
+        
+        for (AuditLog al : auditLogs) {
+            
+            if (al == null) continue;
+            
+            model.addRow(new Object[]{
+                al.getAuditID(),
+                al.getTimestamp(),
+                al.getUserRole(),
+                al.getAction(),
+                al.getTargetID(),
+                "Select",
+            });
+        }
+    }
+    
     private void loadAppointmentChart() {
         try {
             DefaultCategoryDataset dataset = createAppointmentCountDataset();
@@ -609,6 +698,7 @@ public class ManagerScreen extends javax.swing.JFrame {
         dh.loadAppointments();
         dh.loadFeedback();
         dh.loadPayments();
+        dh.loadAuditLog();
         User user = loadCurrentUser();
          
         String username = user.getUsername();
@@ -617,6 +707,7 @@ public class ManagerScreen extends javax.swing.JFrame {
         loadUserTable("MANAGER", "COUNTERSTAFF", "TECHNICIAN");
         loadFeedbackTable();
         loadPriceTable();
+        loadAuditLogTable();
         loadAppointmentChart();
         loadPieChart();
         loadRevenueChart();
@@ -724,6 +815,8 @@ public class ManagerScreen extends javax.swing.JFrame {
         private JButton button;
         private JTable table;
         private FileHandler fh = new FileHandler("user.txt");
+        private FileHandler fh2 = new FileHandler("login.txt");
+        private FileHandler fh3 = new FileHandler("auditLog.txt");
         
         public UserUpdateButtonEditor(JCheckBox checkBox, JTable table) {
             
@@ -756,13 +849,22 @@ public class ManagerScreen extends javax.swing.JFrame {
                 String newRecord = user.toString();
                 
                 try {
+                    Manager manager = (Manager) loadCurrentUser();
                     fh.updateRecord(userID, newRecord);
+                    
+                    if(manager.getUserID().equals(userID)) {
+                        fh2.writeLoginUserRecord(user);
+                        lUser.setText(username);
+                    }
+                    
+                    AuditLog.log(fh3, fh3.generateNextID("AD"), manager.getUserRole() , "UPDATE", userID, "UPDATE USER DETAILS");
                     JOptionPane.showMessageDialog(null, "User successfully updated", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                     dh.loadUsers();
                     dh.loadAppointments();
                     dh.loadFeedback();
                     loadUserTable(role);
                     loadFeedbackTable();
+                    loadAuditLogTable();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -787,6 +889,7 @@ public class ManagerScreen extends javax.swing.JFrame {
         private JButton button;
         private JTable table;
         private FileHandler fh = new FileHandler("user.txt");
+        private FileHandler fh2 = new FileHandler("auditLog.txt");
 
         public UserDeleteButtonEditor(JCheckBox checkBox, JTable table) {
             
@@ -808,24 +911,34 @@ public class ManagerScreen extends javax.swing.JFrame {
                 
                 String userID = table.getValueAt(row, 0).toString();
                 
-                Technician technician = (Technician) dh.getUserByID(userID);
+                User user =  dh.getUserByID(userID);
+                
+                if (user == null) return;
                 
                 try {
-                    Appointment [] appointments = dh.getAppointmentByTechnicianID(userID);
+                    Manager manager = (Manager) loadCurrentUser();
                     
-                    if(technician.hasAssignedAppointment(appointments, appointments.length)) {
+                    if(manager.getUserID().equals(userID)) {
+                        JOptionPane.showMessageDialog(null, "Cannot delete Manager that is Currently Logged In!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    
+                    if (!user.canBeDeleted(dh)) {
                         JOptionPane.showMessageDialog(null, "Cannot delete Technician. Technician has assigned appointments!", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+                   
                     fh.deleteRecord(userID);
                     ((DefaultTableModel) table.getModel()).removeRow(row);
+                    
+                    AuditLog.log(fh2, fh2.generateNextID("AD"), manager.getUserRole(), "DELETE", userID, "DELETE USER");
                     JOptionPane.showMessageDialog(null, "User successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                   
                     dh.loadUsers();
                     dh.loadAppointments();
                     dh.loadFeedback();
                     loadFeedbackTable();
-                    
+                    loadAuditLogTable();
                     
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -888,6 +1001,48 @@ public class ManagerScreen extends javax.swing.JFrame {
             return "Select";
         }
     }
+    
+    class AuditLogSelectButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private AuditLog auditLog;
+        
+        public AuditLogSelectButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            
+            button = new JButton("Select");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String auditLogID = table.getValueAt(row, 0).toString(); 
+                
+                auditLog = dh.getAuditLogByID(auditLogID);
+                
+                taAuditLogDetails.setText(auditLog.getDetails());
+                
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Select";
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCreateUser;
@@ -902,6 +1057,9 @@ public class ManagerScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JLabel lAuditLogDetails;
     private javax.swing.JLabel lBackground;
     private javax.swing.JLabel lCustomerFeedback;
     private javax.swing.JLabel lMajorServicePrice;
@@ -917,13 +1075,16 @@ public class ManagerScreen extends javax.swing.JFrame {
     private javax.swing.JPanel pPaymentRevenueBarChart;
     private javax.swing.JPanel pPaymentStatusPieChart;
     private javax.swing.JPanel pSetServicePrice;
+    private javax.swing.JPanel pViewAuditLogs;
     private javax.swing.JPanel pViewFeedbacksAndComments;
     private javax.swing.JPanel pViewReport;
     private javax.swing.JSpinner sMajorServicePrice;
     private javax.swing.JSpinner sNormalServicePrice;
+    private javax.swing.JTable tAuditLogs;
     private javax.swing.JTable tFeedbacks;
     private javax.swing.JTable tPrices;
     private javax.swing.JTable tUsers;
+    private javax.swing.JTextArea taAuditLogDetails;
     private javax.swing.JTextArea taCustomerFeedback;
     private javax.swing.JTextArea taTechnicianFeedback;
     private javax.swing.JTextField tfNewUserID;

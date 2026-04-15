@@ -378,6 +378,9 @@ public class CustomerScreen extends javax.swing.JFrame {
 
                 FileHandler fh2 = new FileHandler("login.txt");
                 fh2.writeLoginUserRecord(user);
+                
+                FileHandler fh3 = new FileHandler("auditLog.txt");
+                AuditLog.log(fh3, fh3.generateNextID("AD"), user.getUserRole(), "UPDATE", user.getUserID(), "UPDATE USER DETAILS");
 
                 JOptionPane.showMessageDialog(null, "Successfully updated User Profile!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
 
@@ -399,6 +402,7 @@ public class CustomerScreen extends javax.swing.JFrame {
     private void bRequestAppointmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRequestAppointmentActionPerformed
         FileHandler fh = new FileHandler("appointment.txt");
         FileHandler fh2 = new FileHandler("feedback.txt");
+        FileHandler fh3 = new FileHandler("auditLog.txt");
         
         String appointmentLocation = tfAppointmentLocation.getText();
         String customerFeedback = taCustomerFeedback.getText();
@@ -464,6 +468,9 @@ public class CustomerScreen extends javax.swing.JFrame {
             fh.writeRecord(appointment);
             fh2.writeRecord(feedback);
             
+            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserRole(), "REQUEST", appointmentID, "REQUEST APPOINTMENT");
+            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserRole(), "CREATE", appointmentID, "CREATE CUSTOMER FEEDBACK");
+            
             dh.loadUsers();
             dh.loadAppointments();
             dh.loadFeedback();
@@ -485,6 +492,7 @@ public class CustomerScreen extends javax.swing.JFrame {
 
         FileHandler fh = new FileHandler("payment.txt");
         FileHandler fh2 = new FileHandler("appointment.txt");
+        FileHandler fh3 = new FileHandler("auditLog.txt");
         
         Double price = Double.parseDouble(tfPayAppointmentPrice.getText());
         String paymentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -514,6 +522,8 @@ public class CustomerScreen extends javax.swing.JFrame {
             
             fh.writeRecord(payment);
             fh2.updateRecord(tfPayAppointmentID.getText(), appointment.toString());
+            
+            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserRole(), "SUBMIT", paymentID, "SUBMIT PAYMENT");
             
             dh.loadAppointments();
             dh.loadPayments();
@@ -673,6 +683,7 @@ public class CustomerScreen extends javax.swing.JFrame {
         private JTable table;
         private FileHandler fh = new FileHandler("appointment.txt");
         private FileHandler fh2 = new FileHandler("feedback.txt");
+        private FileHandler fh3 = new FileHandler("auditLog.txt");
         
         public AppointmentDeleteButtonEditor(JCheckBox checkBox, JTable table) {
             
@@ -695,12 +706,16 @@ public class CustomerScreen extends javax.swing.JFrame {
                 String appointmentID = table.getValueAt(row, 0).toString();
                 String feedbackID = dh.getFeedbackByAppointmentID(appointmentID).getFeedbackID();
                 try {
+                    Customer customer = (Customer) loadCurrentUser();
                     fh2.deleteRecord(feedbackID);
                     fh.deleteRecord(appointmentID);
                     ((DefaultTableModel) table.getModel()).removeRow(row);
+                    
+                    AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserRole(), "DELETE", appointmentID, "DELETE APPOINTMENT");
+                    
                     JOptionPane.showMessageDialog(null, "Appointment successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                   
-                    //load Feedback Table once done
+                    //load Feedback Table 
                     
                 } catch (Exception ex) {
                     ex.printStackTrace();
