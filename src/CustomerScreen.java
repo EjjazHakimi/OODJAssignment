@@ -380,7 +380,7 @@ public class CustomerScreen extends javax.swing.JFrame {
                 fh2.writeLoginUserRecord(user);
                 
                 FileHandler fh3 = new FileHandler("auditLog.txt");
-                AuditLog.log(fh3, fh3.generateNextID("AD"), user.getUserRole(), "UPDATE", user.getUserID(), "UPDATE USER DETAILS");
+                AuditLog.log(fh3, fh3.generateNextID("AD"), user.getUserID(), "UPDATE", user.getUserID(), "UPDATE USER DETAILS");
 
                 JOptionPane.showMessageDialog(null, "Successfully updated User Profile!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
 
@@ -468,8 +468,8 @@ public class CustomerScreen extends javax.swing.JFrame {
             fh.writeRecord(appointment);
             fh2.writeRecord(feedback);
             
-            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserRole(), "REQUEST", appointmentID, "REQUEST APPOINTMENT");
-            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserRole(), "CREATE", appointmentID, "CREATE CUSTOMER FEEDBACK");
+            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserID(), "REQUEST", appointmentID, "REQUEST APPOINTMENT");
+            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserID(), "CREATE", appointmentID, "CREATE CUSTOMER FEEDBACK");
             
             dh.loadUsers();
             dh.loadAppointments();
@@ -523,7 +523,7 @@ public class CustomerScreen extends javax.swing.JFrame {
             fh.writeRecord(payment);
             fh2.updateRecord(tfPayAppointmentID.getText(), appointment.toString());
             
-            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserRole(), "SUBMIT", paymentID, "SUBMIT PAYMENT");
+            AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserID(), "SUBMIT", paymentID, "SUBMIT PAYMENT");
             
             dh.loadAppointments();
             dh.loadPayments();
@@ -711,7 +711,7 @@ public class CustomerScreen extends javax.swing.JFrame {
                     fh.deleteRecord(appointmentID);
                     ((DefaultTableModel) table.getModel()).removeRow(row);
                     
-                    AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserRole(), "DELETE", appointmentID, "DELETE APPOINTMENT");
+                    AuditLog.log(fh3, fh3.generateNextID("AD"), customer.getUserID(), "DELETE", appointmentID, "DELETE APPOINTMENT");
                     
                     JOptionPane.showMessageDialog(null, "Appointment successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                   

@@ -425,12 +425,12 @@ public class DataHandler {
                 String [] auditLogRecord = line.split("\\|");
                 String auditID = auditLogRecord[0];
                 String timestamp = auditLogRecord[1];
-                String userRole = auditLogRecord[2];
+                String userID = auditLogRecord[2];
                 String action = auditLogRecord[3];
                 String targetID = auditLogRecord[4];
                 String details = auditLogRecord[5];
                 
-                auditLogs[auditLogCount++] = new AuditLog(auditID, timestamp, userRole, action, targetID, details);
+                auditLogs[auditLogCount++] = new AuditLog(auditID, timestamp, userID, action, targetID, details);
             }
         }
         return auditLogs;

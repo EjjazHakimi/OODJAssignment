@@ -409,7 +409,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
                 fh2.writeLoginUserRecord(user);
                 
                 FileHandler fh3 = new FileHandler("auditLog.txt");
-                AuditLog.log(fh3, fh3.generateNextID("AD"), user.getUserRole(), "UPDATE", user.getUserID(), "UPDATE USER DETAILS");
+                AuditLog.log(fh3, fh3.generateNextID("AD"), user.getUserID(), "UPDATE", user.getUserID(), "UPDATE USER DETAILS");
                 
                 JOptionPane.showMessageDialog(null, "Successfully updated User Profile!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
 
@@ -453,7 +453,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
             tfAppointmentEndTime.setText("");
             taCustomerFeedback.setText("");
             
-            AuditLog.log(fh2, fh2.generateNextID("AD"), technician.getUserRole(), "COMPLETE", appointmentID, "COMPLETE ASSIGNMENT");
+            AuditLog.log(fh2, fh2.generateNextID("AD"), technician.getUserID(), "COMPLETE", appointmentID, "COMPLETE ASSIGNMENT");
                 
             JOptionPane.showMessageDialog(null, "Appointment Completed", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
             
@@ -522,7 +522,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
             fh.updateRecord(appointmentID, appointment.toString());
             fh2.updateRecord(feedback.getFeedbackID(), feedback.toString());
             
-            AuditLog.log(fh3, fh3.generateNextID("AD"), technician.getUserRole(), "CREATE", feedback.getFeedbackID(), "CREATE TECHNICIAN FEEDBACK");
+            AuditLog.log(fh3, fh3.generateNextID("AD"), technician.getUserID(), "CREATE", feedback.getFeedbackID(), "CREATE TECHNICIAN FEEDBACK");
             
             dh.loadUsers();
             dh.loadAppointments();

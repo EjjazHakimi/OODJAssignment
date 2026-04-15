@@ -4,16 +4,16 @@ import java.time.format.DateTimeFormatter;
 
 public class AuditLog implements FileHandlerInterface {
     private String auditID;
-    private String userRole;
+    private String userID;
     private String action;
     private String targetID;
     private String details;
     private String timestamp;
     
     
-    public AuditLog(String auditID, String userRole, String action, String targetID, String details) {
+    public AuditLog(String auditID, String userID, String action, String targetID, String details) {
         this.auditID = auditID;
-        this.userRole = userRole;
+        this.userID = userID;
         this.action = action;
         this.targetID = targetID;
         this.details = details;
@@ -22,10 +22,10 @@ public class AuditLog implements FileHandlerInterface {
         this.timestamp = LocalDateTime.now().format(formatter);
     }
     
-    public AuditLog(String auditID, String timestamp, String userRole, String action, String targetID, String details) {
+    public AuditLog(String auditID, String timestamp, String userID, String action, String targetID, String details) {
         this.auditID = auditID;
         this.timestamp = timestamp;
-        this.userRole = userRole;
+        this.userID = userID;
         this.action = action;
         this.targetID = targetID;
         this.details = details;
@@ -39,8 +39,8 @@ public class AuditLog implements FileHandlerInterface {
         return timestamp;
     }
     
-    public String getUserRole() {
-        return userRole;
+    public String getUserID() {
+        return userID;
     }
     
     public String getAction() {
@@ -66,7 +66,7 @@ public class AuditLog implements FileHandlerInterface {
     
     @Override
     public String toString() {
-        return auditID + "|" + timestamp + "|" + userRole + "|" + action + "|" + targetID + "|" + details;
+        return auditID + "|" + timestamp + "|" + userID + "|" + action + "|" + targetID + "|" + details;
     }
     
     @Override

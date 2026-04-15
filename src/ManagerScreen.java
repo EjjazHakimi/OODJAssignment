@@ -121,8 +121,10 @@ public class ManagerScreen extends javax.swing.JFrame {
         pViewAuditLogs = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tAuditLogs = new javax.swing.JTable();
+        tfAuditor = new javax.swing.JTextField();
         jScrollPane8 = new javax.swing.JScrollPane();
         taAuditLogDetails = new javax.swing.JTextArea();
+        lAuditor = new javax.swing.JLabel();
         lAuditLogDetails = new javax.swing.JLabel();
         lBackground = new javax.swing.JLabel();
 
@@ -391,7 +393,7 @@ public class ManagerScreen extends javax.swing.JFrame {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "Audit ID", "Timestamp", "User Role", "User Action", "Target ID", "Action"
+                "Audit ID", "Timestamp", "User ID", "User Action", "Target ID", "Action"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -414,6 +416,13 @@ public class ManagerScreen extends javax.swing.JFrame {
 
         pViewAuditLogs.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 30, 630, 250));
 
+        tfAuditor.setEditable(false);
+        tfAuditor.setEnabled(false);
+        tfAuditor.setFocusable(false);
+        tfAuditor.setRequestFocusEnabled(false);
+        tfAuditor.setVerifyInputWhenFocusTarget(false);
+        pViewAuditLogs.add(tfAuditor, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 320, 230, 50));
+
         taAuditLogDetails.setEditable(false);
         taAuditLogDetails.setColumns(20);
         taAuditLogDetails.setRows(5);
@@ -424,11 +433,15 @@ public class ManagerScreen extends javax.swing.JFrame {
         taAuditLogDetails.setVerifyInputWhenFocusTarget(false);
         jScrollPane8.setViewportView(taAuditLogDetails);
 
-        pViewAuditLogs.add(jScrollPane8, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 320, 450, 110));
+        pViewAuditLogs.add(jScrollPane8, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 320, 270, 110));
+
+        lAuditor.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lAuditor.setText("AUDITOR");
+        pViewAuditLogs.add(lAuditor, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 290, 160, 30));
 
         lAuditLogDetails.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         lAuditLogDetails.setText("AUDIT LOG DETAILS");
-        pViewAuditLogs.add(lAuditLogDetails, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 290, 170, 30));
+        pViewAuditLogs.add(lAuditLogDetails, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 290, 170, 30));
 
         tpTabs.addTab("View Audit Logs", pViewAuditLogs);
 
@@ -476,7 +489,7 @@ public class ManagerScreen extends javax.swing.JFrame {
                 fh.writeRecord(u);
                 dh.loadUsers();
                 
-                AuditLog.log(fh2, fh2.generateNextID("AD"), manager.getUserRole(), "CREATE", newID, "CREATE USER");
+                AuditLog.log(fh2, fh2.generateNextID("AD"), manager.getUserID(), "CREATE", newID, "CREATE USER");
                 JOptionPane.showMessageDialog(null, "User successfully created", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                 loadUserTable(newRole);
                 loadAuditLogTable();
@@ -611,7 +624,7 @@ public class ManagerScreen extends javax.swing.JFrame {
             model.addRow(new Object[]{
                 al.getAuditID(),
                 al.getTimestamp(),
-                al.getUserRole(),
+                al.getUserID(),
                 al.getAction(),
                 al.getTargetID(),
                 "Select",
@@ -857,7 +870,7 @@ public class ManagerScreen extends javax.swing.JFrame {
                         lUser.setText(username);
                     }
                     
-                    AuditLog.log(fh3, fh3.generateNextID("AD"), manager.getUserRole() , "UPDATE", userID, "UPDATE USER DETAILS");
+                    AuditLog.log(fh3, fh3.generateNextID("AD"), manager.getUserID() , "UPDATE", userID, "UPDATE USER DETAILS");
                     JOptionPane.showMessageDialog(null, "User successfully updated", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                     dh.loadUsers();
                     dh.loadAppointments();
@@ -931,7 +944,7 @@ public class ManagerScreen extends javax.swing.JFrame {
                     fh.deleteRecord(userID);
                     ((DefaultTableModel) table.getModel()).removeRow(row);
                     
-                    AuditLog.log(fh2, fh2.generateNextID("AD"), manager.getUserRole(), "DELETE", userID, "DELETE USER");
+                    AuditLog.log(fh2, fh2.generateNextID("AD"), manager.getUserID(), "DELETE", userID, "DELETE USER");
                     JOptionPane.showMessageDialog(null, "User successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                   
                     dh.loadUsers();
@@ -1007,6 +1020,7 @@ public class ManagerScreen extends javax.swing.JFrame {
         private JButton button;
         private JTable table;
         private AuditLog auditLog;
+        private User user;
         
         public AuditLogSelectButtonEditor(JCheckBox checkBox, JTable table) {
             
@@ -1026,7 +1040,9 @@ public class ManagerScreen extends javax.swing.JFrame {
                 String auditLogID = table.getValueAt(row, 0).toString(); 
                 
                 auditLog = dh.getAuditLogByID(auditLogID);
+                user = dh.getUserByID(auditLog.getUserID());
                 
+                tfAuditor.setText(user.getUsername());
                 taAuditLogDetails.setText(auditLog.getDetails());
                 
             });
@@ -1060,6 +1076,7 @@ public class ManagerScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JLabel lAuditLogDetails;
+    private javax.swing.JLabel lAuditor;
     private javax.swing.JLabel lBackground;
     private javax.swing.JLabel lCustomerFeedback;
     private javax.swing.JLabel lMajorServicePrice;
@@ -1087,6 +1104,7 @@ public class ManagerScreen extends javax.swing.JFrame {
     private javax.swing.JTextArea taAuditLogDetails;
     private javax.swing.JTextArea taCustomerFeedback;
     private javax.swing.JTextArea taTechnicianFeedback;
+    private javax.swing.JTextField tfAuditor;
     private javax.swing.JTextField tfNewUserID;
     private javax.swing.JPasswordField tfNewUserPassword;
     private javax.swing.JTextField tfNewUserUsername;
