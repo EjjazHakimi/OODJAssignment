@@ -460,6 +460,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         
         try {
             u = dh.RegisterUser(newID, newUsername, newPassword, newRole);
+            if(u == null) return;
             if(!fh.doesRecordExists(u)) {
                 fh.writeRecord(u);
                 dh.loadUsers();
@@ -515,16 +516,9 @@ public class CounterStaffScreen extends javax.swing.JFrame {
             
             appointment.setTechnician(technician);
           
-            switch (appointmentType) {
-                case ("NORMAL") :
-                    appointmentEndTime = appointment.getAppointmentStartTime().plusHours(1);
-                    break;
-                case ("MAJOR") :
-                    appointmentEndTime = appointment.getAppointmentStartTime().plusHours(3);
-                    break;
-            }
+            appointmentEndTime = counterStaff.calculateEndTime(appointmentType, appointment.getAppointmentStartTime());
             
-            if(!dh.isTechnicianAvailable(technician.getUserID(), appointment.getAppointmentDate(), appointment.getAppointmentStartTime(), appointmentEndTime)) {
+            if(!counterStaff.canAssignTechnician(technician, dh.getAppointments(), dh.getAppointmentCount(), appointment, appointmentEndTime)) {
                 JOptionPane.showMessageDialog(null, "Technician is Busy!", "ERROR", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -790,12 +784,14 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 
                 String userID = table.getValueAt(row, 0).toString();
                 
+                Customer customer = (Customer) dh.getUserByID(userID);
+                
                 try {
                     Appointment [] appointments = dh.getAppointmentByUserID(userID);
                     String[] feedbackIDs = dh.getFeedbackIDsByUserID(userID);
                     String[] appointmentIDs = dh.getAppointmentIDsByUserID(userID);
                     
-                    if(dh.hasAssignedAppointment(appointments)) {
+                    if(customer.hasAssignedAppointment(appointments, appointments.length)) {
                         JOptionPane.showMessageDialog(null, "Cannot delete user. User has assigned appointments!", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
                     }

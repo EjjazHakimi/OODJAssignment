@@ -446,6 +446,7 @@ public class TechnicianScreen extends javax.swing.JFrame {
             tfAppointmentType.setText("");
             tfAppointmentStartTime.setText("");
             tfAppointmentEndTime.setText("");
+            taCustomerFeedback.setText("");
                 
             JOptionPane.showMessageDialog(null, "Appointment Completed", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
             
