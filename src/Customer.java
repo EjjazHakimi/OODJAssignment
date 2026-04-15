@@ -28,4 +28,10 @@ public class Customer extends User {
         }
         return false;
     }
+    
+    @Override
+    public boolean canBeDeleted(DataHandler dh) {
+        Appointment[] appointments = dh.getAppointmentByUserID(this.getUserID());
+        return !hasAssignedAppointment(appointments, appointments.length);
+    }
 }

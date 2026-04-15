@@ -30,6 +30,7 @@ public class DataHandler {
     private Appointment [] appointments = new Appointment[maxCount];
     private Payment [] payments = new Payment[maxCount];
     private Feedback [] feedbacks = new Feedback[maxCount];
+    private AuditLog [] auditLogs = new AuditLog[maxCount];
     
     private int userCount = 0;
     private int technicianCount = 0;
@@ -39,11 +40,13 @@ public class DataHandler {
     private int appointmentCount = 0;
     private int paymentCount = 0;
     private int feedbackCount = 0;
+    private int auditLogCount = 0;
     
     private String userFile = "user.txt";
     private String appointmentFile = "appointment.txt";
     private String paymentFile = "payment.txt";
     private String feedbackFile = "feedback.txt";
+    private String auditLogFile = "auditLog.txt";
     
     public DataHandler(){ 
     }
@@ -410,6 +413,36 @@ public class DataHandler {
         }
         
         return java.util.Arrays.copyOf(result, count);
+    }
+    
+    public AuditLog [] loadAuditLog() throws IOException {
+        
+        auditLogCount = 0;
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(auditLogFile))) {
+            String line;
+            while((line = br.readLine()) != null && auditLogCount < maxCount) {
+                String [] auditLogRecord = line.split("\\|");
+                String auditID = auditLogRecord[0];
+                String timestamp = auditLogRecord[1];
+                String userRole = auditLogRecord[2];
+                String action = auditLogRecord[3];
+                String targetID = auditLogRecord[4];
+                String details = auditLogRecord[5];
+                
+                auditLogs[auditLogCount++] = new AuditLog(auditID, timestamp, userRole, action, targetID, details);
+            }
+        }
+        return auditLogs;
+    }
+    
+    public AuditLog getAuditLogByID(String ID) {
+        for(int i = 0; i < auditLogCount; i++) {
+            if(auditLogs[i].getAuditID().equals(ID)){
+                return auditLogs[i];
+            }
+        }
+        return null;
     }
     
     public User Login(String loginID, String loginUsername, String loginPassword) throws IOException {

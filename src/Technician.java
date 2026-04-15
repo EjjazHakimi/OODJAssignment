@@ -63,4 +63,10 @@ public class Technician extends User{
         }
         return false;
     }
+    
+    @Override
+    public boolean canBeDeleted(DataHandler dh) {
+        Appointment[] appointments = dh.getAppointmentByTechnicianID(this.getUserID());
+        return !hasAssignedAppointment(appointments, appointments.length);
+    }
 }

@@ -431,6 +431,9 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                FileHandler fh2 = new FileHandler("login.txt");
                fh2.writeLoginUserRecord(user);
                
+               FileHandler fh3 = new FileHandler("auditLog.txt");
+               AuditLog.log(fh3, fh3.generateNextID("AD"), user.getUserRole(), "UPDATE", user.getUserID(), "UPDATE USER DETAILS");
+               
                JOptionPane.showMessageDialog(null, "Successfully updated User Profile!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                
                tfUsername.setText(newUsername);
@@ -455,15 +458,18 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         String newID = tfNewCustomerID.getText();
         
         FileHandler fh = new FileHandler("user.txt");
+        FileHandler fh2 = new FileHandler("auditLog.txt");
         
         User u;
         
         try {
+            CounterStaff counterStaff = (CounterStaff) loadCurrentUser();
             u = dh.RegisterUser(newID, newUsername, newPassword, newRole);
             if(u == null) return;
             if(!fh.doesRecordExists(u)) {
                 fh.writeRecord(u);
                 dh.loadUsers();
+                AuditLog.log(fh2, fh2.generateNextID("AD"), counterStaff.getUserRole(), "CREATE", u.getUserID(), "CREATE NEW USER");
                 JOptionPane.showMessageDialog(null, "User successfully created", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                 loadUserTable();   
             } else {
@@ -486,6 +492,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         LocalTime appointmentEndTime = null;
         
         FileHandler fh = new FileHandler("appointment.txt");
+        FileHandler fh2 = new FileHandler("auditLog.txt");
         
         if (rbAppointmentTypeNormal.isSelected()) {
                 appointmentType = "NORMAL";
@@ -531,6 +538,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
             
             
             fh.updateRecord(appointmentID, appointment.toString());
+            AuditLog.log(fh2, fh2.generateNextID("AD"), counterStaff.getUserRole(), "ASSIGN", appointmentID, "ASSIGN APPOINTMENT TO TECHNICIAN");
             JOptionPane.showMessageDialog(null, "Appointment successfully assigned!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
             
             tfAppointmentID.setText("");
@@ -552,6 +560,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         FileHandler fh = new FileHandler("payment.txt");
         FileHandler fh2 = new FileHandler("appointment.txt");
         FileHandler fh3 = new FileHandler("myReceipt.txt");
+        FileHandler fh4 = new FileHandler("auditLog.txt");
         
         String paymentID = tfPaymentID.getText();
         String appointmentID = tfPayAppointmentID.getText();
@@ -582,6 +591,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
             tfPaymentID.setText("");
             tfPayAppointmentID.setText("");
             
+            AuditLog.log(fh4, fh4.generateNextID("AD"), counterStaff.getUserRole(), "COLLECT", paymentID, "COLLECT PAYMENT");
             JOptionPane.showMessageDialog(null, "Payment Successfully Collected!", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             System.getLogger(CounterStaffScreen.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -763,6 +773,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         private FileHandler fh = new FileHandler("user.txt");
         private FileHandler fh2 = new FileHandler("appointment.txt");
         private FileHandler fh3 = new FileHandler("feedback.txt");
+        private FileHandler fh4 = new FileHandler("auditLog.txt");
         
         public CustomerDeleteButtonEditor(JCheckBox checkBox, JTable table) {
             
@@ -784,15 +795,16 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 
                 String userID = table.getValueAt(row, 0).toString();
                 
-                Customer customer = (Customer) dh.getUserByID(userID);
-                
+                User user = dh.getUserByID(userID);
+                   
                 try {
+                    CounterStaff counterStaff = (CounterStaff) loadCurrentUser();
                     Appointment [] appointments = dh.getAppointmentByUserID(userID);
                     String[] feedbackIDs = dh.getFeedbackIDsByUserID(userID);
                     String[] appointmentIDs = dh.getAppointmentIDsByUserID(userID);
                     
-                    if(customer.hasAssignedAppointment(appointments, appointments.length)) {
-                        JOptionPane.showMessageDialog(null, "Cannot delete user. User has assigned appointments!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    if (!user.canBeDeleted(dh)) {
+                        JOptionPane.showMessageDialog(null, "Cannot delete User. User has assigned appointments!", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     
@@ -800,6 +812,8 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                     fh2.deleteRecords(appointmentIDs);
                     fh.deleteRecord(userID);
                     ((DefaultTableModel) table.getModel()).removeRow(row);
+                    
+                    AuditLog.log(fh4, fh4.generateNextID("AD"), counterStaff.getUserRole(), "DELETE", userID, "DELETE USER");
                     JOptionPane.showMessageDialog(null, "User successfully deleted", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                   
                     dh.loadUsers();
@@ -830,6 +844,7 @@ public class CounterStaffScreen extends javax.swing.JFrame {
         private JButton button;
         private JTable table;
         private FileHandler fh = new FileHandler("user.txt");
+        private FileHandler fh2 = new FileHandler("auditLog.txt");
         
         public CustomerUpdateButtonEditor(JCheckBox checkBox, JTable table) {
             
@@ -862,7 +877,9 @@ public class CounterStaffScreen extends javax.swing.JFrame {
                 String newRecord = user.toString();
                 
                 try {
+                    CounterStaff counterStaff = (CounterStaff) loadCurrentUser();
                     fh.updateRecord(userID, newRecord);
+                    AuditLog.log(fh2, fh2.generateNextID("AD"), counterStaff.getUserRole(), "UPDATE", userID, "UPDATE USER DETAILS");
                     JOptionPane.showMessageDialog(null, "User successfully updated", "NOTICE", JOptionPane.INFORMATION_MESSAGE);
                     dh.loadUsers();
                     dh.loadAppointments();
