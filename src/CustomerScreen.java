@@ -408,17 +408,7 @@ public class CustomerScreen extends javax.swing.JFrame {
         String customerFeedback = taCustomerFeedback.getText();
         
         Date selectedDate = jdAppointmentDate.getDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String appointmentDate = sdf.format(selectedDate);
-        
         String selectedTime = cbAppointmentStartTime.getSelectedItem().toString();
-        LocalTime appointmentStartTime = LocalTime.parse(selectedTime);
-        LocalDateTime now = LocalDateTime.now();
-        
-        LocalDate selectedDateCheck = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDateTime selectedDateTime = LocalDateTime.of(selectedDateCheck, appointmentStartTime);
-        
-        
         
         if(appointmentLocation.isBlank()) {
             JOptionPane.showMessageDialog(null, "Appointment Location is Empty!", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -429,7 +419,18 @@ public class CustomerScreen extends javax.swing.JFrame {
         } else if (customerFeedback.isBlank()) {
             JOptionPane.showMessageDialog(null, "Customer Comment not Provided!", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
-        } else if(selectedDateTime.isBefore(now)) {
+        }
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String appointmentDate = sdf.format(selectedDate);
+        
+        LocalTime appointmentStartTime = LocalTime.parse(selectedTime);
+        LocalDateTime now = LocalDateTime.now();
+        
+        LocalDate selectedDateCheck = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDateTime selectedDateTime = LocalDateTime.of(selectedDateCheck, appointmentStartTime);
+
+        if(selectedDateTime.isBefore(now)) {
             JOptionPane.showMessageDialog(null, "Selected Time has Passed!", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
