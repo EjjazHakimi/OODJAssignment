@@ -495,14 +495,15 @@ public class CustomerScreen extends javax.swing.JFrame {
         FileHandler fh2 = new FileHandler("appointment.txt");
         FileHandler fh3 = new FileHandler("auditLog.txt");
         
-        Double price = Double.parseDouble(tfPayAppointmentPrice.getText());
-        String paymentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String appointmentID = tfPayAppointmentID.getText();
         
-       if(appointmentID.isEmpty()) {
+        if(appointmentID.isEmpty()) {
            JOptionPane.showMessageDialog(null, "Please select an appointment!", "ERROR", JOptionPane.ERROR_MESSAGE);
            return;
-       }
+        }
+       
+        Double price = Double.parseDouble(tfPayAppointmentPrice.getText());
+        String paymentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         
         try {
             String paymentID = fh.generateNextID("PY");
