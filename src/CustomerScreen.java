@@ -51,6 +51,21 @@ public class CustomerScreen extends javax.swing.JFrame {
         tPayments.getColumnModel().getColumn(4)
             .setCellEditor(new PayAppointmentSelectButtonEditor(new JCheckBox(), tPayments));
         
+        tFeedbacks.getColumnModel().getColumn(3)
+            .setCellRenderer(new ButtonRenderer());
+        tFeedbacks.getColumnModel().getColumn(3)
+            .setCellEditor(new FeedbackSelectButtonEditor(new JCheckBox(), tFeedbacks));
+        
+        tPastAppointments.getColumnModel().getColumn(4)
+            .setCellRenderer(new ButtonRenderer());
+        tPastAppointments.getColumnModel().getColumn(4)
+            .setCellEditor(new PastAppointmentSelectButtonEditor(new JCheckBox(), tPastAppointments));
+        
+        tPastPayments.getColumnModel().getColumn(3)
+            .setCellRenderer(new ButtonRenderer());
+        tPastPayments.getColumnModel().getColumn(3)
+            .setCellEditor(new PastPaymentSelectButtonEditor(new JCheckBox(), tPastPayments));
+        
         onStart();
     }
 
@@ -92,7 +107,27 @@ public class CustomerScreen extends javax.swing.JFrame {
         lPayAppointmentPrice = new javax.swing.JLabel();
         bPay = new javax.swing.JButton();
         pViewFeedback = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tFeedbacks = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        taTechnicianFeedback = new javax.swing.JTextArea();
+        lTechnicianFeedback = new javax.swing.JLabel();
         pHistory = new javax.swing.JPanel();
+        tpHistoryTabs = new javax.swing.JTabbedPane();
+        pAppointmentHistory = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tPastAppointments = new javax.swing.JTable();
+        tfPastAppointmentStartTime = new javax.swing.JTextField();
+        tfPastAppointmentEndTime = new javax.swing.JTextField();
+        lPastAppointmentStartTime = new javax.swing.JLabel();
+        lPastAppointmentEndTime = new javax.swing.JLabel();
+        pPaymentHistory = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tPastPayments = new javax.swing.JTable();
+        tfCounterStaffID = new javax.swing.JTextField();
+        tfCounterStaffUsername = new javax.swing.JTextField();
+        lCounterStaffID = new javax.swing.JLabel();
+        lCounterStaffUsername = new javax.swing.JLabel();
         pProfile = new javax.swing.JPanel();
         tfCurrentID = new javax.swing.JTextField();
         tfCurrentRole = new javax.swing.JTextField();
@@ -270,29 +305,172 @@ public class CustomerScreen extends javax.swing.JFrame {
 
         tpTabs.addTab("Make Payment", pMakePayment);
 
-        javax.swing.GroupLayout pViewFeedbackLayout = new javax.swing.GroupLayout(pViewFeedback);
-        pViewFeedback.setLayout(pViewFeedbackLayout);
-        pViewFeedbackLayout.setHorizontalGroup(
-            pViewFeedbackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 740, Short.MAX_VALUE)
-        );
-        pViewFeedbackLayout.setVerticalGroup(
-            pViewFeedbackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
-        );
+        pViewFeedback.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tFeedbacks.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Feedback ID", "Appointment ID", "Technician Name", "Action"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(tFeedbacks);
+        if (tFeedbacks.getColumnModel().getColumnCount() > 0) {
+            tFeedbacks.getColumnModel().getColumn(0).setResizable(false);
+            tFeedbacks.getColumnModel().getColumn(1).setResizable(false);
+            tFeedbacks.getColumnModel().getColumn(2).setResizable(false);
+            tFeedbacks.getColumnModel().getColumn(3).setResizable(false);
+        }
+
+        pViewFeedback.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 40, 650, 230));
+
+        taTechnicianFeedback.setEditable(false);
+        taTechnicianFeedback.setColumns(20);
+        taTechnicianFeedback.setRows(5);
+        taTechnicianFeedback.setEnabled(false);
+        taTechnicianFeedback.setFocusable(false);
+        taTechnicianFeedback.setRequestFocusEnabled(false);
+        taTechnicianFeedback.setVerifyInputWhenFocusTarget(false);
+        jScrollPane5.setViewportView(taTechnicianFeedback);
+
+        pViewFeedback.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, 270, 120));
+
+        lTechnicianFeedback.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lTechnicianFeedback.setText("TECHNICIAN FEEDBACK");
+        pViewFeedback.add(lTechnicianFeedback, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 290, -1, 30));
 
         tpTabs.addTab("View Feedback", pViewFeedback);
 
-        javax.swing.GroupLayout pHistoryLayout = new javax.swing.GroupLayout(pHistory);
-        pHistory.setLayout(pHistoryLayout);
-        pHistoryLayout.setHorizontalGroup(
-            pHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 740, Short.MAX_VALUE)
-        );
-        pHistoryLayout.setVerticalGroup(
-            pHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
-        );
+        pHistory.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tpHistoryTabs.setBackground(new java.awt.Color(255, 255, 255));
+
+        pAppointmentHistory.setBackground(new java.awt.Color(255, 255, 255));
+        pAppointmentHistory.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tPastAppointments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Appointment ID", "Date", "Appointment Type", "Location", "Action"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane6.setViewportView(tPastAppointments);
+        if (tPastAppointments.getColumnModel().getColumnCount() > 0) {
+            tPastAppointments.getColumnModel().getColumn(0).setResizable(false);
+            tPastAppointments.getColumnModel().getColumn(1).setResizable(false);
+            tPastAppointments.getColumnModel().getColumn(2).setResizable(false);
+            tPastAppointments.getColumnModel().getColumn(3).setResizable(false);
+            tPastAppointments.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        pAppointmentHistory.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 660, 180));
+
+        tfPastAppointmentStartTime.setEditable(false);
+        tfPastAppointmentStartTime.setEnabled(false);
+        tfPastAppointmentStartTime.setFocusable(false);
+        tfPastAppointmentStartTime.setRequestFocusEnabled(false);
+        tfPastAppointmentStartTime.setVerifyInputWhenFocusTarget(false);
+        pAppointmentHistory.add(tfPastAppointmentStartTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 200, 40));
+
+        tfPastAppointmentEndTime.setEditable(false);
+        tfPastAppointmentEndTime.setEnabled(false);
+        tfPastAppointmentEndTime.setFocusable(false);
+        tfPastAppointmentEndTime.setRequestFocusEnabled(false);
+        tfPastAppointmentEndTime.setVerifyInputWhenFocusTarget(false);
+        pAppointmentHistory.add(tfPastAppointmentEndTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 260, 210, 40));
+
+        lPastAppointmentStartTime.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lPastAppointmentStartTime.setText("APPOINTMENT START TIME");
+        pAppointmentHistory.add(lPastAppointmentStartTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 200, 30));
+
+        lPastAppointmentEndTime.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lPastAppointmentEndTime.setText("APPOINTMENT END TIME");
+        pAppointmentHistory.add(lPastAppointmentEndTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 230, 210, 30));
+
+        tpHistoryTabs.addTab("Appointment History", pAppointmentHistory);
+
+        pPaymentHistory.setBackground(new java.awt.Color(255, 255, 255));
+        pPaymentHistory.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tPastPayments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Payment ID", "Price", "Date", "Action"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane7.setViewportView(tPastPayments);
+        if (tPastPayments.getColumnModel().getColumnCount() > 0) {
+            tPastPayments.getColumnModel().getColumn(0).setResizable(false);
+            tPastPayments.getColumnModel().getColumn(1).setResizable(false);
+            tPastPayments.getColumnModel().getColumn(2).setResizable(false);
+            tPastPayments.getColumnModel().getColumn(3).setResizable(false);
+        }
+
+        pPaymentHistory.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 30, 660, 190));
+
+        tfCounterStaffID.setEditable(false);
+        tfCounterStaffID.setEnabled(false);
+        tfCounterStaffID.setFocusable(false);
+        tfCounterStaffID.setRequestFocusEnabled(false);
+        tfCounterStaffID.setVerifyInputWhenFocusTarget(false);
+        pPaymentHistory.add(tfCounterStaffID, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, 220, 40));
+
+        tfCounterStaffUsername.setEditable(false);
+        tfCounterStaffUsername.setEnabled(false);
+        tfCounterStaffUsername.setFocusable(false);
+        tfCounterStaffUsername.setRequestFocusEnabled(false);
+        tfCounterStaffUsername.setVerifyInputWhenFocusTarget(false);
+        pPaymentHistory.add(tfCounterStaffUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 280, 210, 40));
+
+        lCounterStaffID.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lCounterStaffID.setText("COUNTER STAFF ID");
+        pPaymentHistory.add(lCounterStaffID, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, 160, 30));
+
+        lCounterStaffUsername.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lCounterStaffUsername.setText("COUNTER STAFF NAME");
+        pPaymentHistory.add(lCounterStaffUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 250, 180, 30));
+
+        tpHistoryTabs.addTab("Payment History", pPaymentHistory);
+
+        pHistory.add(tpHistoryTabs, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 17, 700, 430));
 
         tpTabs.addTab("History", pHistory);
 
@@ -614,6 +792,81 @@ public class CustomerScreen extends javax.swing.JFrame {
         }
     }
     
+    private void loadFeedbackTable() throws IOException {
+        
+        String customerID = loadCurrentUser().getUserID();
+        
+        Feedback [] feedbacks = dh.getFeedbackByUserID(customerID);
+        
+        DefaultTableModel model = (DefaultTableModel) tFeedbacks.getModel();
+        model.setRowCount(0);
+        
+        for (Feedback f : feedbacks) {
+            
+            if (f == null) continue;
+            
+            if (f.getTechnician() == null) continue;
+            
+            model.addRow(new Object[] {
+                f.getFeedbackID(),
+                f.getAppointment().getAppointmentID(),
+                f.getTechnician().getUsername(),
+                "Select"
+            });
+        }
+    }
+    
+    private void loadPastAppointmentTable() throws IOException {
+        Appointment [] appointments = dh.getAppointmentByStatus("CLOSED");
+        
+        DefaultTableModel model = (DefaultTableModel) tPastAppointments.getModel();
+        model.setRowCount(0);
+        
+        String customerID = loadCurrentUser().getUserID();
+        
+        for (Appointment a : appointments) {
+            
+            if (a == null) continue;
+            
+            if (a.getCustomer() == null) continue;
+
+            if (!a.getCustomer().getUserID().equalsIgnoreCase(customerID)) continue;
+            
+            model.addRow(new Object[] {
+                a.getAppointmentID(),
+                a.getAppointmentDate(),
+                a.getAppointmentType(),
+                a.getAppointmentLocation(),
+                "Select"
+            });
+        }
+    }
+    
+        private void loadPastPaymentTable() throws IOException {
+        Payment [] payments = dh.getPaymentByStatus("COLLECTED");
+        
+        DefaultTableModel model = (DefaultTableModel) tPastPayments.getModel();
+        model.setRowCount(0);
+        
+        String customerID = loadCurrentUser().getUserID();
+        
+        for (Payment p : payments) {
+            
+            if (p == null) continue;
+            
+            if (p.getCustomer() == null) continue;
+
+            if (!p.getCustomer().getUserID().equalsIgnoreCase(customerID)) continue;
+            
+            model.addRow(new Object[] {
+                p.getPaymentID(),
+                p.getPaymentAmount(),
+                p.getPaymentDate(),
+                "Select"
+            });
+        }
+    }
+    
      private void onStart() throws FileNotFoundException, IOException{
         
         dh.loadUsers();
@@ -635,6 +888,9 @@ public class CustomerScreen extends javax.swing.JFrame {
         
         loadAppointmentTable();
         loadPaymentTable();
+        loadFeedbackTable();
+        loadPastAppointmentTable();
+        loadPastPaymentTable();
     }
      
     /**
@@ -790,6 +1046,134 @@ public class CustomerScreen extends javax.swing.JFrame {
         }
     }
     
+        class FeedbackSelectButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private Feedback feedback;
+        
+        public FeedbackSelectButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            
+            button = new JButton("Select");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String feedbackID = table.getValueAt(row, 0).toString(); 
+                
+                feedback = dh.getFeedbackByID(feedbackID);
+                
+                taTechnicianFeedback.setText(feedback.getTechnicianFeedback());
+                    
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Select";
+        }
+    }
+        
+        class PastAppointmentSelectButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private Appointment appointment;
+        
+        public PastAppointmentSelectButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            
+            button = new JButton("Select");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String appointmentID = table.getValueAt(row, 0).toString(); 
+                
+                appointment = dh.getAppointmentByID(appointmentID);
+                
+                tfPastAppointmentStartTime.setText(appointment.getAppointmentStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                tfPastAppointmentEndTime.setText(appointment.getAppointmentEndTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Select";
+        }
+    }
+        
+        class PastPaymentSelectButtonEditor extends DefaultCellEditor {
+        
+        private JButton button;
+        private JTable table;
+        private Payment payment;
+        
+        public PastPaymentSelectButtonEditor(JCheckBox checkBox, JTable table) {
+            
+            super(checkBox);
+            this.table = table;
+            
+            button = new JButton("Select");
+            
+            button.addActionListener(e -> {
+                
+                fireEditingStopped();
+                
+                int row = table.getSelectedRow();
+                
+                if (row < 0) return;
+                
+                String paymentID = table.getValueAt(row, 0).toString(); 
+                
+                payment = dh.getPaymentByID(paymentID);
+                
+                tfCounterStaffID.setText(payment.getCounterStaff().getUserID());
+                tfCounterStaffUsername.setText(payment.getCounterStaff().getUsername());
+                    
+            });
+        }
+        
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+                return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Select";
+        }
+    }
+    
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -801,40 +1185,60 @@ public class CustomerScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private com.toedter.calendar.JDateChooser jdAppointmentDate;
     private javax.swing.JLabel lAppointmentDate;
     private javax.swing.JLabel lAppointmentLocation;
     private javax.swing.JLabel lAppointmentStartTime;
     private javax.swing.JLabel lBackground;
     private javax.swing.JLabel lComments;
+    private javax.swing.JLabel lCounterStaffID;
+    private javax.swing.JLabel lCounterStaffUsername;
     private javax.swing.JLabel lCurrentPassword;
     private javax.swing.JLabel lID;
     private javax.swing.JLabel lPassword;
+    private javax.swing.JLabel lPastAppointmentEndTime;
+    private javax.swing.JLabel lPastAppointmentStartTime;
     private javax.swing.JLabel lPayAppointmentEndTime;
     private javax.swing.JLabel lPayAppointmentID;
     private javax.swing.JLabel lPayAppointmentPrice;
     private javax.swing.JLabel lPayAppointmentStartTime;
     private javax.swing.JLabel lRole;
+    private javax.swing.JLabel lTechnicianFeedback;
     private javax.swing.JLabel lUser;
     private javax.swing.JLabel lUsername;
+    private javax.swing.JPanel pAppointmentHistory;
     private javax.swing.JPanel pHistory;
     private javax.swing.JPanel pMakeAppointment;
     private javax.swing.JPanel pMakePayment;
+    private javax.swing.JPanel pPaymentHistory;
     private javax.swing.JPanel pProfile;
     private javax.swing.JPanel pViewFeedback;
     private javax.swing.JTable tAppointments;
+    private javax.swing.JTable tFeedbacks;
+    private javax.swing.JTable tPastAppointments;
+    private javax.swing.JTable tPastPayments;
     private javax.swing.JTable tPayments;
     private javax.swing.JTextArea taCustomerFeedback;
+    private javax.swing.JTextArea taTechnicianFeedback;
     private javax.swing.JTextField tfAppointmentLocation;
+    private javax.swing.JTextField tfCounterStaffID;
+    private javax.swing.JTextField tfCounterStaffUsername;
     private javax.swing.JTextField tfCurrentID;
     private javax.swing.JPasswordField tfCurrentPassword;
     private javax.swing.JTextField tfCurrentRole;
     private javax.swing.JPasswordField tfPassword;
+    private javax.swing.JTextField tfPastAppointmentEndTime;
+    private javax.swing.JTextField tfPastAppointmentStartTime;
     private javax.swing.JTextField tfPayAppointmentEndTime;
     private javax.swing.JTextField tfPayAppointmentID;
     private javax.swing.JTextField tfPayAppointmentPrice;
     private javax.swing.JTextField tfPayAppointmentStartTime;
     private javax.swing.JTextField tfUsername;
+    private javax.swing.JTabbedPane tpHistoryTabs;
     private javax.swing.JTabbedPane tpTabs;
     // End of variables declaration//GEN-END:variables
 }
