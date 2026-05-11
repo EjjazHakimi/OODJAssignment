@@ -1,11 +1,6 @@
 
 import java.time.LocalTime;
 
-
-/**
- *
- * @author ejjaz
- */
 public class CounterStaff extends User {
     
     public CounterStaff(String userID, String username, String password, 

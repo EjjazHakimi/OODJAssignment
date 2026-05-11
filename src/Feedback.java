@@ -1,8 +1,4 @@
 
-/**
- *
- * @author ejjaz
- */
 public class Feedback implements FileHandlerInterface {
     private String feedbackID;
     private String customerFeedback;

@@ -1,8 +1,4 @@
 
-/**
- *
- * @author ejjaz
- */
 public class Payment implements FileHandlerInterface {
     private String paymentID;
     private double paymentAmount;

@@ -2,11 +2,6 @@
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-
-/**
- *
- * @author ejjaz
- */
 public class Appointment implements FileHandlerInterface {
     private String appointmentID;
     private String appointmentType;

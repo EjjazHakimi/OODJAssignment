@@ -9,11 +9,6 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import java.nio.file.*;
 
-
-/**
- *
- * @author ejjaz
- */
 public class FileHandler {
     String filename;
     

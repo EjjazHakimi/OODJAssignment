@@ -1,8 +1,4 @@
 
-/**
- *
- * @author ejjaz
- */
 public class User implements FileHandlerInterface {
     protected String userID;
     protected String username;
